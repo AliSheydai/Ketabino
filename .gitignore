@@ -1,0 +1,47 @@
+# .NET
+bin/
+obj/
+*.user
+*.suo
+*.db
+*.log
+*.txt
+.vs/
+.vscode/
+backend/ketabino.db
+backend/error.txt
+backend/backend.log
+
+# Next.js
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/.swc/
+frontend/build/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+*.sh
+# Docker
+.dockerignore
+docker-compose.override.yml
+run.sh
+Ketabino.Tests/
+
+# IDE
+.idea/
+*.swp
+*.swo
+
+# Test coverage
+coverage/

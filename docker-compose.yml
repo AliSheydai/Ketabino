@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: ketabino-backend
+    ports:
+      - "5000:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - Jwt:SecretKey=KetabinoSuperSecretKey1234567890!@#$
+      - Jwt:Issuer=KetabinoApi
+      - Jwt:Audience=KetabinoClient
+    volumes:
+      - ./backend/ketabino.db:/app/ketabino.db
+    networks:
+      - ketabino-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: ketabino-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://backend:8080
+    depends_on:
+      - backend
+    networks:
+      - ketabino-network
+
+networks:
+  ketabino-network:
+    driver: bridge
