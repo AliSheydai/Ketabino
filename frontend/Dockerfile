@@ -4,10 +4,16 @@ WORKDIR /app
 
 # Copy package files and install dependencies
 COPY package*.json ./
+# Configure NPM mirror for better connectivity in Iran
+RUN npm config set registry https://registry.npmmirror.com/
 RUN npm ci
 
 # Copy source code
 COPY . .
+
+# Set build argument for API URL
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
 
 # Build the Next.js application
 RUN npm run build
