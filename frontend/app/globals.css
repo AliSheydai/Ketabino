@@ -1,5 +1,7 @@
 /* File Path: app/globals.css */
 @import "tailwindcss";
+@source "../app";
+@source "../components";
 @import "@fontsource/vazirmatn/400.css";
 @import "@fontsource/vazirmatn/500.css";
 @import "@fontsource/vazirmatn/700.css";
@@ -90,7 +92,7 @@
 }
 
 /* ─── Tailwind v4 Theme Bridge ────────────────────────────────────────────── */
-@theme inline {
+@theme {
   --font-sans: 'Vazirmatn', system-ui, sans-serif;
 
   --radius-sm:  var(--radius-sm);
@@ -117,53 +119,62 @@
   --color-rose:         var(--accent-rose);
 }
 
-/* ─── Global Reset & Base ─────────────────────────────────────────────────── */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+@layer base {
+  /* ─── Global Reset & Base ─────────────────────────────────────────────────── */
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    direction: rtl;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'Vazirmatn', system-ui, sans-serif;
+    background-color: var(--bg-base);
+    color: var(--text-primary);
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  /* ─── Scrollbar ───────────────────────────────────────────────────────────── */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--bg-surface);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+    border-radius: 99px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-gold-dim);
+  }
+
+  /* ─── Selection ───────────────────────────────────────────────────────────── */
+  ::selection {
+    background: rgba(201, 168, 76, 0.30);
+    color: var(--text-primary);
+  }
+  
+  /* Focus ring */
+  *:focus-visible {
+    outline: 2px solid var(--accent-gold);
+    outline-offset: 2px;
+  }
 }
 
-html {
-  direction: rtl;
-  scroll-behavior: smooth;
-}
-
-body {
-  font-family: 'Vazirmatn', system-ui, sans-serif;
-  background-color: var(--bg-base);
-  color: var(--text-primary);
-  line-height: 1.75;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
-}
-
-/* ─── Scrollbar ───────────────────────────────────────────────────────────── */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: var(--bg-surface);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--border-strong);
-  border-radius: 99px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-gold-dim);
-}
-
-/* ─── Selection ───────────────────────────────────────────────────────────── */
-::selection {
-  background: rgba(201, 168, 76, 0.30);
-  color: var(--text-primary);
-}
-
-/* ─── Global Helper Classes ───────────────────────────────────────────────── */
+@layer utilities {
+  /* ─── Global Helper Classes ───────────────────────────────────────────────── */
 
 /* Glassmorphism card */
 .glass {
@@ -235,31 +246,25 @@ body {
 .bg-card     { background-color: var(--bg-card);    }
 .bg-elevated { background-color: var(--bg-elevated); }
 
-/* Gold shimmer skeleton loader */
-@keyframes shimmer {
-  0%   { background-position: -200% center; }
-  100% { background-position:  200% center; }
-}
+  /* Gold shimmer skeleton loader */
+  @keyframes shimmer {
+    0%   { background-position: -200% center; }
+    100% { background-position:  200% center; }
+  }
 
-.skeleton {
-  background: linear-gradient(
-    90deg,
-    var(--bg-card) 25%,
-    var(--bg-elevated) 50%,
-    var(--bg-card) 75%
-  );
-  background-size: 200% auto;
-  animation: shimmer 1.6s ease-in-out infinite;
-  border-radius: var(--radius-md);
-}
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      var(--bg-card) 25%,
+      var(--bg-elevated) 50%,
+      var(--bg-card) 75%
+    );
+    background-size: 200% auto;
+    animation: shimmer 1.6s ease-in-out infinite;
+    border-radius: var(--radius-md);
+  }
 
-/* Focus ring */
-*:focus-visible {
-  outline: 2px solid var(--accent-gold);
-  outline-offset: 2px;
-}
-
-/* Hide scrollbar but keep scrollability */
+  /* Hide scrollbar but keep scrollability */
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -274,11 +279,12 @@ body {
   letter-spacing: 2px;
 }
 
-/* Chapter locked overlay */
-.locked-overlay {
-  background: linear-gradient(
-    to bottom,
-    transparent 0%,
-    var(--bg-base) 80%
-  );
+  /* Chapter locked overlay */
+  .locked-overlay {
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      var(--bg-base) 80%
+    );
+  }
 }
