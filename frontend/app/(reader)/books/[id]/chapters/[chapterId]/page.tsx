@@ -103,7 +103,7 @@ export default function ChapterPage({ params }: { params: Promise<{ id: string; 
   const balanceOk = wallet && chapter && wallet.balance >= chapter.price;
 
   return (
-    <div style={{ maxWidth: 760, margin: '0 auto', padding: '24px 20px' }}>
+    <div style={{ maxWidth: 760, margin: '0 auto', padding: 'var(--fixed-header-content-offset) 20px 24px' }}>
 
       {/* Breadcrumb */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 24, color: 'var(--text-muted)', fontSize: '0.85rem' }}>
@@ -115,7 +115,7 @@ export default function ChapterPage({ params }: { params: Promise<{ id: string; 
 
       {/* Reading toolbar */}
       <div style={{
-        position: 'sticky', top: 64, zIndex: 40,
+        position: 'sticky', top: 'var(--fixed-header-sticky-offset)', zIndex: 40,
         display: 'flex', alignItems: 'center', gap: 12,
         background: 'var(--glass-bg)', backdropFilter: 'blur(16px)',
         border: '1px solid var(--border-default)',

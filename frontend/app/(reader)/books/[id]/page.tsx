@@ -68,7 +68,7 @@ export default function BookDetailPage({ params }: { params: Promise<{ id: strin
   }
 
   if (isLoading) return (
-    <div style={{ maxWidth: 900, margin: '0 auto', padding: '40px 20px' }}>
+    <div style={{ maxWidth: 900, margin: '0 auto', padding: 'var(--fixed-header-content-offset) 20px 40px' }}>
       <Skeleton className="h-64 w-full mb-6" />
       <Skeleton className="h-8 w-1/2 mb-3" />
       <Skeleton className="h-4 w-full mb-2" />
@@ -77,7 +77,7 @@ export default function BookDetailPage({ params }: { params: Promise<{ id: strin
   );
 
   if (!book) return (
-    <div style={{ textAlign: 'center', padding: 80, color: 'var(--text-muted)' }}>
+    <div style={{ textAlign: 'center', padding: 'var(--fixed-header-content-offset) 20px 80px', color: 'var(--text-muted)' }}>
       <p>کتاب یافت نشد.</p>
     </div>
   );
@@ -85,7 +85,7 @@ export default function BookDetailPage({ params }: { params: Promise<{ id: strin
   const avgRating = reviews.length ? (reviews.reduce((a, r) => a + r.rating, 0) / reviews.length).toFixed(1) : '—';
 
   return (
-    <div style={{ maxWidth: 900, margin: '0 auto', padding: '32px 20px' }}>
+    <div style={{ maxWidth: 900, margin: '0 auto', padding: 'var(--fixed-header-content-offset) 20px 32px' }}>
 
       {/* Banner + Meta */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}

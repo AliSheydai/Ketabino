@@ -43,6 +43,10 @@
   --shadow-glow-violet: 0 0 32px rgba(139, 92, 246, 0.20);
   --shadow-card:        0 4px 24px rgba(0, 0, 0, 0.45);
 
+  /* Fixed header spacing */
+  --fixed-header-content-offset: 112px;
+  --fixed-header-sticky-offset: 96px;
+
   /* Radii */
   --radius-sm: 6px;
   --radius-md: 10px;
@@ -51,6 +55,13 @@
   --radius-2xl: 28px;
 
   color-scheme: dark;
+}
+
+@media (max-width: 640px) {
+  :root {
+    --fixed-header-content-offset: 124px;
+    --fixed-header-sticky-offset: 108px;
+  }
 }
 
 [data-theme='light'] {
@@ -133,6 +144,7 @@
     direction: rtl;
     scroll-behavior: smooth;
   }
+
 
   body {
     font-family: 'Vazirmatn', system-ui, sans-serif;
