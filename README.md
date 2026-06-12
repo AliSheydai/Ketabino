@@ -12,7 +12,11 @@ A book reading and writing platform built with Next.js and ASP.NET Core.
 
 ## Running Without Docker
 
-### 1. Run the Backend
+To run the application locally without Docker, you need to start the backend and frontend in two separate terminal windows.
+
+### Terminal 1: Run the Backend
+
+Open your first terminal window and run:
 
 ```bash
 # Navigate to the project root
@@ -30,13 +34,14 @@ The backend will:
 - Initialize the database schema
 - Start listening on `http://localhost:5000`
 
-### 2. Run the Frontend
+### Terminal 2: Run the Frontend
 
-Open a new terminal window:
+Open a **new, separate terminal window** and run:
 
 ```bash
-# Navigate to the frontend directory
-cd frontend
+# Navigate to the frontend directory (adjust path if needed)
+cd ketabino/frontend
+# or if you are already in the ketabino root: cd frontend
 
 # Install dependencies
 npm install
