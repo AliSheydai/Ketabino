@@ -35,16 +35,13 @@ export function Header() {
   }
 
   return (
-    <header style={{
-      position: 'sticky', top: 0, zIndex: 50,
-      background: 'var(--glass-bg)',
-      backdropFilter: 'blur(20px)',
-      borderBottom: '1px solid var(--border-default)',
-    }}>
-      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 20px', height: 64, display: 'flex', alignItems: 'center', gap: 16 }}>
+    <header 
+    className='fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-[900px]'
+    >
+      <div style={{padding: "6px 14px"}} className='flex items-center justify-between px-6 py-2 rounded-xl backdrop-blur-2xl bg-white/5 border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)]'>
         
         {/* Logo */}
-        <Link href="/home" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none', flexShrink: 0 }}>
+        <Link className='hidden md:flex pl-10' href="/home" style={{paddingLeft: "8px" ,alignItems: 'center', gap: 8, textDecoration: 'none', flexShrink: 0 }}>
           <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg, #C9A84C, #8B5CF6)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>
             📚
           </div>
@@ -52,7 +49,7 @@ export function Header() {
         </Link>
 
         {/* Search */}
-        <form onSubmit={handleSearch} style={{ flex: 1, maxWidth: 420 }}>
+        <form onSubmit={handleSearch} style={{paddingLeft: "8px" ,flex: 1, maxWidth: 420 }}>
           <div style={{ position: 'relative' }}>
             <Search size={16} style={{ position: 'absolute', top: '50%', right: 12, transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
             <input

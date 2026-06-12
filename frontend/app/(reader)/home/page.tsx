@@ -80,19 +80,37 @@ function HomeContent() {
           }}
         />
 
-        {/* Bottom fade: blends hero into the page background */}
+        {/* Bottom fade: blends hero into the page background — works for both dark & light themes */}
         <div
+          className="hero-bottom-fade"
           style={{
             position: 'absolute',
             bottom: 0,
             left: 0,
             right: 0,
-            height: '180px',
+            height: '80px',
             zIndex: 3,
-            background: 'linear-gradient(to bottom, transparent 0%, var(--bg-primary, #0A0A0F) 100%)',
             pointerEvents: 'none',
           }}
         />
+        <style>{`
+          .hero-bottom-fade {
+            background: linear-gradient(to bottom, transparent 0%, var(--bg-primary, #0A0A0F) 100%);
+          }
+          @media (prefers-color-scheme: light) {
+            .hero-bottom-fade {
+              background: linear-gradient(to bottom, transparent 0%, var(--bg-primary, #FFFFFF) 100%);
+            }
+          }
+          [data-theme="light"] .hero-bottom-fade,
+          .light .hero-bottom-fade {
+            background: linear-gradient(to bottom, transparent 0%, var(--bg-primary, #F8F5EF) 100%);
+          }
+          [data-theme="dark"] .hero-bottom-fade,
+          .dark .hero-bottom-fade {
+            background: linear-gradient(to bottom, transparent 0%, var(--bg-primary, #0A0A0F) 100%);
+          }
+        `}</style>
 
         {/* Hero content */}
         <motion.div
