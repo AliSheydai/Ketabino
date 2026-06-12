@@ -166,7 +166,7 @@ export function Header() {
                               {!n.isRead && <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--accent-gold)' }} />}
                             </p>
                             <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{n.message}</p>
-                            <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: 4, display: 'block' }}>{formatRelativeTime(new Date(n.createdAt))}</span>
+                            <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: 4, display: 'block' }}>{formatRelativeTime(n.createdAt)}</span>
                           </div>
                         ))
                       )}
