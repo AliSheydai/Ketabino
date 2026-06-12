@@ -1,6 +1,6 @@
 // File Path: app/layout.tsx
 import type { Metadata, Viewport } from 'next';
-import { ViewTransitions } from 'next-view-transitions';
+import ViewTransitionsProvider from '@/components/ViewTransitionsProvider';
 import { AuthProvider } from '@/context/AuthContext';
 import { NextThemeProvider } from '@/components/shared/NextThemeProvider';
 import './globals.css';
@@ -33,16 +33,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ViewTransitions>
-      <html lang="fa" dir="rtl" suppressHydrationWarning>
-        <body className="antialiased" suppressHydrationWarning>
+    <html lang="fa" dir="rtl" suppressHydrationWarning>
+      <body className="antialiased" suppressHydrationWarning>
+        <ViewTransitionsProvider>
           <NextThemeProvider>
             <AuthProvider>
               {children}
             </AuthProvider>
           </NextThemeProvider>
-        </body>
-      </html>
-    </ViewTransitions>
+        </ViewTransitionsProvider>
+      </body>
+    </html>
   );
 }
