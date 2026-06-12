@@ -1,20 +1,33 @@
 'use client';
 // File: components/shared/Header.tsx
-import { useState } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 import { Link } from 'next-view-transitions';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
-import { Search, Wallet, User, LogOut, BookOpen, LayoutDashboard, Bell } from 'lucide-react';
+import { useTheme } from 'next-themes';
+import { Search, Wallet, User, LogOut, BookOpen, LayoutDashboard, Moon, Sun } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useWallet } from '@/hooks/useWallet';
 import { formatCoins } from '@/utils/format';
+
+const subscribeToClientMount = () => () => undefined;
+const getClientMountedSnapshot = () => true;
+const getServerMountedSnapshot = () => false;
 
 export function Header() {
   const router = useRouter();
   const { user, isAuthenticated, logout } = useAuth();
   const { wallet } = useWallet();
+  const { resolvedTheme, setTheme } = useTheme();
   const [searchQuery, setSearchQuery] = useState('');
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const mounted = useSyncExternalStore(
+    subscribeToClientMount,
+    getClientMountedSnapshot,
+    getServerMountedSnapshot,
+  );
+  const isDarkTheme = resolvedTheme === 'dark';
+  const nextTheme = isDarkTheme ? 'light' : 'dark';
 
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();
@@ -62,6 +75,45 @@ export function Header() {
         </form>
 
         <div style={{ marginRight: 'auto', display: 'flex', alignItems: 'center', gap: 8 }}>
+          <button
+            type="button"
+            onClick={() => setTheme(nextTheme)}
+            disabled={!mounted}
+            aria-label={isDarkTheme ? 'تغییر به تم روشن' : 'تغییر به تم تاریک'}
+            title={isDarkTheme ? 'تغییر به تم روشن' : 'تغییر به تم تاریک'}
+            style={{
+              width: 38,
+              height: 38,
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: 'var(--radius-md)',
+              border: '1px solid var(--border-default)',
+              background: 'var(--bg-elevated)',
+              color: 'var(--text-primary)',
+              cursor: mounted ? 'pointer' : 'default',
+              opacity: mounted ? 1 : 0.65,
+              boxShadow: 'var(--shadow-card)',
+              transition: 'transform 0.15s ease, border-color 0.15s ease, background 0.15s ease',
+            }}
+            onMouseEnter={e => {
+              if (!mounted) return;
+              e.currentTarget.style.transform = 'translateY(-1px)';
+              e.currentTarget.style.borderColor = 'var(--accent-gold-dim)';
+              e.currentTarget.style.background = 'var(--bg-card)';
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.borderColor = 'var(--border-default)';
+              e.currentTarget.style.background = 'var(--bg-elevated)';
+            }}
+          >
+            {mounted && isDarkTheme ? (
+              <Sun size={18} style={{ color: 'var(--accent-gold)' }} />
+            ) : (
+              <Moon size={18} style={{ color: 'var(--accent-violet)' }} />
+            )}
+          </button>
           {isAuthenticated ? (
             <>
               {/* Wallet balance pill */}

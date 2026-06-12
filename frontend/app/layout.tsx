@@ -2,6 +2,7 @@
 import type { Metadata, Viewport } from 'next';
 import { ViewTransitions } from 'next-view-transitions';
 import { AuthProvider } from '@/context/AuthContext';
+import { NextThemeProvider } from '@/components/shared/NextThemeProvider';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -35,9 +36,11 @@ export default function RootLayout({
     <ViewTransitions>
       <html lang="fa" dir="rtl" suppressHydrationWarning>
         <body className="antialiased" suppressHydrationWarning>
-          <AuthProvider>
-            {children}
-          </AuthProvider>
+          <NextThemeProvider>
+            <AuthProvider>
+              {children}
+            </AuthProvider>
+          </NextThemeProvider>
         </body>
       </html>
     </ViewTransitions>

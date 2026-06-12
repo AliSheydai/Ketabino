@@ -1,0 +1,322 @@
+diff --git a/frontend/app/globals.css b/frontend/app/globals.css
+index a9bf59d8c59b92a7215fd4404faa2b0449e9edcd..a541e410a1ddc406b36f3b6669ccf7ae3455fc68 100644
+--- a/frontend/app/globals.css
++++ b/frontend/app/globals.css
+@@ -24,50 +24,90 @@
+   /* Typography */
+   --text-primary:   #E2E8F0;
+   --text-secondary: #A0AEC0;
+   --text-muted:     #4A5568;
+ 
+   /* Borders */
+   --border-subtle:  rgba(255, 255, 255, 0.04);
+   --border-default: rgba(255, 255, 255, 0.08);
+   --border-strong:  rgba(255, 255, 255, 0.14);
+ 
+   /* Glass */
+   --glass-bg:     rgba(17, 17, 24, 0.75);
+   --glass-border: rgba(255, 255, 255, 0.06);
+ 
+   /* Shadows */
+   --shadow-glow-gold:   0 0 32px rgba(201, 168, 76, 0.25);
+   --shadow-glow-violet: 0 0 32px rgba(139, 92, 246, 0.20);
+   --shadow-card:        0 4px 24px rgba(0, 0, 0, 0.45);
+ 
+   /* Radii */
+   --radius-sm: 6px;
+   --radius-md: 10px;
+   --radius-lg: 14px;
+   --radius-xl: 20px;
+   --radius-2xl: 28px;
++
++  color-scheme: dark;
++}
++
++[data-theme='light'] {
++  /* Backgrounds */
++  --bg-base:     #F8F5EF;
++  --bg-surface:  #FFFDF8;
++  --bg-card:     #FFFFFF;
++  --bg-elevated: #F1E9DA;
++
++  /* Accent palette */
++  --accent-gold:       #9A741F;
++  --accent-gold-dim:   #D6B660;
++  --accent-gold-glow:  rgba(154, 116, 31, 0.14);
++  --accent-violet:     #6D4ED9;
++  --accent-violet-dim: rgba(109, 78, 217, 0.14);
++  --accent-emerald:    #059669;
++  --accent-rose:       #E11D48;
++
++  /* Typography */
++  --text-primary:   #1F2937;
++  --text-secondary: #4B5563;
++  --text-muted:     #8A7A60;
++
++  /* Borders */
++  --border-subtle:  rgba(42, 31, 12, 0.07);
++  --border-default: rgba(42, 31, 12, 0.12);
++  --border-strong:  rgba(42, 31, 12, 0.22);
++
++  /* Glass */
++  --glass-bg:     rgba(255, 253, 248, 0.78);
++  --glass-border: rgba(42, 31, 12, 0.08);
++
++  /* Shadows */
++  --shadow-glow-gold:   0 0 32px rgba(154, 116, 31, 0.18);
++  --shadow-glow-violet: 0 0 32px rgba(109, 78, 217, 0.14);
++  --shadow-card:        0 10px 30px rgba(42, 31, 12, 0.12);
++
++  color-scheme: light;
+ }
+ 
+ /* ─── Tailwind v4 Theme Bridge ────────────────────────────────────────────── */
+ @theme inline {
+   --font-sans: 'Vazirmatn', system-ui, sans-serif;
+ 
+   --radius-sm:  var(--radius-sm);
+   --radius-md:  var(--radius-md);
+   --radius-lg:  var(--radius-lg);
+   --radius-xl:  var(--radius-xl);
+   --radius-2xl: var(--radius-2xl);
+ 
+   --color-background:  var(--bg-base);
+   --color-foreground:  var(--text-primary);
+   --color-card:        var(--bg-card);
+   --color-popover:     var(--bg-elevated);
+   --color-primary:     var(--accent-gold);
+   --color-accent:      var(--accent-violet);
+   --color-border:      var(--border-default);
+   --color-muted:       var(--text-muted);
+   --color-surface:     var(--bg-surface);
+   --color-elevated:    var(--bg-elevated);
+ 
+   --color-gold:         var(--accent-gold);
+   --color-gold-dim:     var(--accent-gold-dim);
+diff --git a/frontend/app/layout.tsx b/frontend/app/layout.tsx
+index 8bfe2e7eac12ec7ee17fe20efb2c0f71a68c366c..d9655047e4159e29a1d82d64c213314f812d3267 100644
+--- a/frontend/app/layout.tsx
++++ b/frontend/app/layout.tsx
+@@ -1,45 +1,48 @@
+ // File Path: app/layout.tsx
+ import type { Metadata, Viewport } from 'next';
+ import { ViewTransitions } from 'next-view-transitions';
+ import { AuthProvider } from '@/context/AuthContext';
++import { NextThemeProvider } from '@/components/shared/NextThemeProvider';
+ import './globals.css';
+ 
+ export const metadata: Metadata = {
+   title: {
+     default: 'کتابینو — کتاب دیجیتال به سبک جدید',
+     template: '%s | کتابینو',
+   },
+   description:
+     'پلتفرم خرید و مطالعه کتاب دیجیتال با مدل پرداخت به ازای هر فصل. خواندن را از هر کجا، هر زمان شروع کن.',
+   keywords: ['کتاب دیجیتال', 'کتابینو', 'خرید کتاب', 'مطالعه آنلاین'],
+   authors: [{ name: 'Ketabino Team' }],
+   openGraph: {
+     type: 'website',
+     locale: 'fa_IR',
+     siteName: 'کتابینو',
+   },
+ };
+ 
+ export const viewport: Viewport = {
+   themeColor: '#0A0A0F',
+   width: 'device-width',
+   initialScale: 1,
+ };
+ 
+ export default function RootLayout({
+   children,
+ }: {
+   children: React.ReactNode;
+ }) {
+   return (
+     <ViewTransitions>
+       <html lang="fa" dir="rtl" suppressHydrationWarning>
+         <body className="antialiased" suppressHydrationWarning>
+-          <AuthProvider>
+-            {children}
+-          </AuthProvider>
++          <NextThemeProvider>
++            <AuthProvider>
++              {children}
++            </AuthProvider>
++          </NextThemeProvider>
+         </body>
+       </html>
+     </ViewTransitions>
+   );
+ }
+diff --git a/frontend/components/shared/Header.tsx b/frontend/components/shared/Header.tsx
+index 0b1f924b867ed2261f4f7993f21a73edb6dc0bde..b404e8f3da07688da5b3ab084261a4aeea22b10c 100644
+--- a/frontend/components/shared/Header.tsx
++++ b/frontend/components/shared/Header.tsx
+@@ -1,89 +1,141 @@
+ 'use client';
+ // File: components/shared/Header.tsx
+-import { useState } from 'react';
++import { useState, useSyncExternalStore } from 'react';
+ import { Link } from 'next-view-transitions';
+ import { motion, AnimatePresence } from 'framer-motion';
+ import { useRouter } from 'next/navigation';
+-import { Search, Wallet, User, LogOut, BookOpen, LayoutDashboard, Bell } from 'lucide-react';
++import { useTheme } from 'next-themes';
++import { Search, Wallet, User, LogOut, BookOpen, LayoutDashboard, Moon, Sun } from 'lucide-react';
+ import { useAuth } from '@/context/AuthContext';
+ import { useWallet } from '@/hooks/useWallet';
+ import { formatCoins } from '@/utils/format';
+ 
++const subscribeToClientMount = () => () => undefined;
++const getClientMountedSnapshot = () => true;
++const getServerMountedSnapshot = () => false;
++
+ export function Header() {
+   const router = useRouter();
+   const { user, isAuthenticated, logout } = useAuth();
+   const { wallet } = useWallet();
++  const { resolvedTheme, setTheme } = useTheme();
+   const [searchQuery, setSearchQuery] = useState('');
+   const [dropdownOpen, setDropdownOpen] = useState(false);
++  const mounted = useSyncExternalStore(
++    subscribeToClientMount,
++    getClientMountedSnapshot,
++    getServerMountedSnapshot,
++  );
++  const isDarkTheme = resolvedTheme === 'dark';
++  const nextTheme = isDarkTheme ? 'light' : 'dark';
+ 
+   function handleSearch(e: React.FormEvent) {
+     e.preventDefault();
+     if (searchQuery.trim()) router.push(`/home?search=${encodeURIComponent(searchQuery)}`);
+   }
+ 
+   return (
+     <header style={{
+       position: 'sticky', top: 0, zIndex: 50,
+       background: 'var(--glass-bg)',
+       backdropFilter: 'blur(20px)',
+       borderBottom: '1px solid var(--border-default)',
+     }}>
+       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 20px', height: 64, display: 'flex', alignItems: 'center', gap: 16 }}>
+         
+         {/* Logo */}
+         <Link href="/home" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none', flexShrink: 0 }}>
+           <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg, #C9A84C, #8B5CF6)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>
+             📚
+           </div>
+           <span className="text-gradient-gold" style={{ fontWeight: 700, fontSize: '1.1rem' }}>کتابینو</span>
+         </Link>
+ 
+         {/* Search */}
+         <form onSubmit={handleSearch} style={{ flex: 1, maxWidth: 420 }}>
+           <div style={{ position: 'relative' }}>
+             <Search size={16} style={{ position: 'absolute', top: '50%', right: 12, transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+             <input
+               type="search"
+               placeholder="جستجوی کتاب یا نویسنده…"
+               value={searchQuery}
+               onChange={e => setSearchQuery(e.target.value)}
+               style={{
+                 width: '100%', padding: '9px 40px 9px 14px',
+                 background: 'var(--bg-elevated)',
+                 border: '1px solid var(--border-default)',
+                 borderRadius: 'var(--radius-md)',
+                 color: 'var(--text-primary)',
+                 fontSize: '0.9rem',
+                 outline: 'none',
+                 fontFamily: 'inherit',
+               }}
+             />
+           </div>
+         </form>
+ 
+         <div style={{ marginRight: 'auto', display: 'flex', alignItems: 'center', gap: 8 }}>
++          <button
++            type="button"
++            onClick={() => setTheme(nextTheme)}
++            disabled={!mounted}
++            aria-label={isDarkTheme ? 'تغییر به تم روشن' : 'تغییر به تم تاریک'}
++            title={isDarkTheme ? 'تغییر به تم روشن' : 'تغییر به تم تاریک'}
++            style={{
++              width: 38,
++              height: 38,
++              display: 'inline-flex',
++              alignItems: 'center',
++              justifyContent: 'center',
++              borderRadius: 'var(--radius-md)',
++              border: '1px solid var(--border-default)',
++              background: 'var(--bg-elevated)',
++              color: 'var(--text-primary)',
++              cursor: mounted ? 'pointer' : 'default',
++              opacity: mounted ? 1 : 0.65,
++              boxShadow: 'var(--shadow-card)',
++              transition: 'transform 0.15s ease, border-color 0.15s ease, background 0.15s ease',
++            }}
++            onMouseEnter={e => {
++              if (!mounted) return;
++              e.currentTarget.style.transform = 'translateY(-1px)';
++              e.currentTarget.style.borderColor = 'var(--accent-gold-dim)';
++              e.currentTarget.style.background = 'var(--bg-card)';
++            }}
++            onMouseLeave={e => {
++              e.currentTarget.style.transform = 'translateY(0)';
++              e.currentTarget.style.borderColor = 'var(--border-default)';
++              e.currentTarget.style.background = 'var(--bg-elevated)';
++            }}
++          >
++            {mounted && isDarkTheme ? (
++              <Sun size={18} style={{ color: 'var(--accent-gold)' }} />
++            ) : (
++              <Moon size={18} style={{ color: 'var(--accent-violet)' }} />
++            )}
++          </button>
+           {isAuthenticated ? (
+             <>
+               {/* Wallet balance pill */}
+               {wallet && (
+                 <Link href="/profile" style={{ textDecoration: 'none' }}>
+                   <div style={{
+                     display: 'flex', alignItems: 'center', gap: 6,
+                     background: 'var(--accent-gold-glow)',
+                     border: '1px solid var(--accent-gold-dim)',
+                     borderRadius: 'var(--radius-md)',
+                     padding: '6px 12px',
+                     cursor: 'pointer',
+                   }}>
+                     <Wallet size={14} style={{ color: 'var(--accent-gold)' }} />
+                     <span style={{ color: 'var(--accent-gold)', fontSize: '0.85rem', fontWeight: 600 }}>
+                       {formatCoins(wallet.balance)}
+                     </span>
+                   </div>
+                 </Link>
+               )}
+ 
+               {/* User dropdown */}
+               <div style={{ position: 'relative' }}>
+                 <button
+                   onClick={() => setDropdownOpen(o => !o)}
+diff --git a/frontend/components/shared/NextThemeProvider.tsx b/frontend/components/shared/NextThemeProvider.tsx
+new file mode 100644
+index 0000000000000000000000000000000000000000..1c794f6e22dac4ebe4731288950380ff7c285048
+--- /dev/null
++++ b/frontend/components/shared/NextThemeProvider.tsx
+@@ -0,0 +1,17 @@
++'use client';
++
++import type { ReactNode } from 'react';
++import { ThemeProvider } from 'next-themes';
++
++export function NextThemeProvider({ children }: { children: ReactNode }) {
++  return (
++    <ThemeProvider
++      attribute="data-theme"
++      defaultTheme="dark"
++      enableSystem={false}
++      disableTransitionOnChange
++    >
++      {children}
++    </ThemeProvider>
++  );
++}

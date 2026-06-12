@@ -46,6 +46,46 @@
   --radius-lg: 14px;
   --radius-xl: 20px;
   --radius-2xl: 28px;
+
+  color-scheme: dark;
+}
+
+[data-theme='light'] {
+  /* Backgrounds */
+  --bg-base:     #F8F5EF;
+  --bg-surface:  #FFFDF8;
+  --bg-card:     #FFFFFF;
+  --bg-elevated: #F1E9DA;
+
+  /* Accent palette */
+  --accent-gold:       #9A741F;
+  --accent-gold-dim:   #D6B660;
+  --accent-gold-glow:  rgba(154, 116, 31, 0.14);
+  --accent-violet:     #6D4ED9;
+  --accent-violet-dim: rgba(109, 78, 217, 0.14);
+  --accent-emerald:    #059669;
+  --accent-rose:       #E11D48;
+
+  /* Typography */
+  --text-primary:   #1F2937;
+  --text-secondary: #4B5563;
+  --text-muted:     #8A7A60;
+
+  /* Borders */
+  --border-subtle:  rgba(42, 31, 12, 0.07);
+  --border-default: rgba(42, 31, 12, 0.12);
+  --border-strong:  rgba(42, 31, 12, 0.22);
+
+  /* Glass */
+  --glass-bg:     rgba(255, 253, 248, 0.78);
+  --glass-border: rgba(42, 31, 12, 0.08);
+
+  /* Shadows */
+  --shadow-glow-gold:   0 0 32px rgba(154, 116, 31, 0.18);
+  --shadow-glow-violet: 0 0 32px rgba(109, 78, 217, 0.14);
+  --shadow-card:        0 10px 30px rgba(42, 31, 12, 0.12);
+
+  color-scheme: light;
 }
 
 /* ─── Tailwind v4 Theme Bridge ────────────────────────────────────────────── */

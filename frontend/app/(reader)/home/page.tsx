@@ -35,7 +35,7 @@ function HomeContent() {
           style={{ textAlign: 'center', marginBottom: 48 }}>
           <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.1 }}
             style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'var(--accent-gold-glow)', border: '1px solid var(--accent-gold-dim)', borderRadius: 99, padding: '5px 14px', marginBottom: 18 }}>
-            <Sparkles size={14} style={{ color: 'var(--accent-gold)' }} />
+            {/* <Sparkles size={14} style={{ color: 'var(--accent-gold)' }} /> */}
             <span style={{ color: 'var(--accent-gold)', fontSize: '0.85rem', fontWeight: 600 }}>مدل پرداخت فصل به فصل</span>
           </motion.div>
 

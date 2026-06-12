@@ -30,6 +30,7 @@ dotnet run
 ```
 
 The backend will:
+
 - Create the SQLite database automatically on first run
 - Initialize the database schema
 - Start listening on `http://localhost:5000`
@@ -84,6 +85,7 @@ ketabino/
 ## Environment Variables
 
 ### Backend (appsettings.Development.json)
+
 The backend uses default values, but you can customize:
 
 ```json
@@ -100,6 +102,7 @@ The backend uses default values, but you can customize:
 ```
 
 ### Frontend (.env.local)
+
 Create `frontend/.env.local` if needed:
 
 ```env
@@ -113,6 +116,7 @@ NEXT_PUBLIC_API_URL=http://localhost:5000
 SQLite is used by default. The database file (`ketabino.db`) is created automatically in the backend directory on first run.
 
 ### Database Schema
+
 The schema is initialized automatically via `SchemaInitializer` on application startup.
 
 ---
@@ -120,10 +124,12 @@ The schema is initialized automatically via `SchemaInitializer` on application s
 ## API Endpoints
 
 ### Authentication
+
 - `POST /api/auth/register` - Register a new user
 - `POST /api/auth/login` - Login and get JWT token
 
 ### Books
+
 - `GET /api/books` - List all books
 - `GET /api/books/{id}` - Get book details
 - `POST /api/books` - Create a new book (authenticated)
@@ -131,33 +137,41 @@ The schema is initialized automatically via `SchemaInitializer` on application s
 - `DELETE /api/books/{id}` - Delete a book (authenticated)
 
 ### Chapters
+
 - `GET /api/chapters/book/{bookId}` - List chapters for a book
 - `GET /api/chapters/{id}` - Get chapter details
 - `POST /api/chapters` - Create a chapter (authenticated)
 - `PUT /api/chapters/{id}` - Update a chapter (authenticated)
 
 ### Genres
+
 - `GET /api/genres` - List all genres
 
 ### Subscriptions
+
 - `GET /api/subscriptions` - List subscription plans
 - `POST /api/subscriptions/subscribe` - Subscribe to a plan (authenticated)
 
 ### Wallet
+
 - `GET /api/wallet/balance` - Get user balance (authenticated)
 - `POST /api/wallet/deposit` - Deposit funds (authenticated)
 
 ### Reading Progress
+
 - `GET /api/reading-progress/{bookId}` - Get reading progress (authenticated)
 - `POST /api/reading-progress` - Update reading progress (authenticated)
 
 ### Notifications
+
 - `GET /api/notifications` - Get user notifications (authenticated)
 
 ### Reports
+
 - `POST /api/reports` - Submit a report (authenticated)
 
 ### Admin
+
 - `GET /api/admin/stats` - Get admin statistics (admin only)
 - `GET /api/admin/users` - List all users (admin only)
 
@@ -172,11 +186,21 @@ If you prefer Docker, see [DOCKER.md](./DOCKER.md) for instructions.
 ## Troubleshooting
 
 ### CORS Errors
+
 Make sure the backend is running on port 5000 and the frontend on port 3000.
 
 ### Database Issues
+
 Delete `ketabino.db` and restart the backend to recreate the database.
 
 ### Port Already in Use
+
 - Backend: Change the port in `Properties/launchSettings.json`
 - Frontend: Set `PORT=3001` environment variable
+
+<!-- apply git patch -->
+
+code fix.patch
+git apply --3way fix.patch
+or
+git apply --reject --whitespace=fix fix.patch
