@@ -4,8 +4,9 @@ import { use, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'next-view-transitions';
 import { useRouter } from 'next/navigation';
-import { Heart, Star, BookOpen, Lock, Unlock, MessageCircle, Send } from 'lucide-react';
+import { Heart, Star, BookOpen, Lock, Unlock, MessageCircle, Send, Flag } from 'lucide-react';
 import { useBook, useBookChapters, useBookReviews, useBookComments, useLike } from '@/hooks/useBook';
+import { useReport } from '@/hooks/useReport';
 import { useAuth } from '@/context/AuthContext';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
@@ -24,12 +25,16 @@ export default function BookDetailPage({ params }: { params: Promise<{ id: strin
   const { reviews, submitReview } = useBookReviews(bookId);
   const { comments, submitComment } = useBookComments(bookId);
   const { liked, toggleLike } = useLike(bookId);
+  const { submitReport, isReporting } = useReport();
 
   const [reviewModal, setReviewModal] = useState(false);
+  const [reportModal, setReportModal] = useState(false);
   const [rating, setRating] = useState(5);
   const [reviewTitle, setReviewTitle] = useState('');
   const [reviewContent, setReviewContent] = useState('');
   const [commentText, setCommentText] = useState('');
+  const [reportReason, setReportReason] = useState('');
+  const [reportDesc, setReportDesc] = useState('');
   const [submittingReview, setSubmittingReview] = useState(false);
   const [submittingComment, setSubmittingComment] = useState(false);
 
@@ -46,6 +51,20 @@ export default function BookDetailPage({ params }: { params: Promise<{ id: strin
     setSubmittingComment(true);
     try { await submitComment(commentText); setCommentText(''); }
     catch { } finally { setSubmittingComment(false); }
+  }
+
+  async function handleReportBook() {
+    if (!isAuthenticated) { router.push('/login'); return; }
+    if (!reportReason.trim()) return;
+    const success = await submitReport('Book', bookId, reportReason, reportDesc);
+    if (success) {
+      setReportModal(false);
+      setReportReason('');
+      setReportDesc('');
+      alert('گزارش شما با موفقیت ثبت شد.');
+    } else {
+      alert('خطا در ثبت گزارش.');
+    }
   }
 
   if (isLoading) return (
@@ -121,6 +140,9 @@ export default function BookDetailPage({ params }: { params: Promise<{ id: strin
             )}
             <Button variant="outline" size="sm" onClick={() => setReviewModal(true)}>
               <Star size={14} />ثبت نظر
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => setReportModal(true)} style={{ color: 'var(--accent-rose)', borderColor: 'rgba(244, 63, 94, 0.3)' }}>
+              <Flag size={14} />گزارش
             </Button>
           </div>
         </div>
@@ -257,6 +279,16 @@ export default function BookDetailPage({ params }: { params: Promise<{ id: strin
           <input value={reviewTitle} onChange={e => setReviewTitle(e.target.value)} placeholder="عنوان نظر" style={inputStyle} />
           <textarea value={reviewContent} onChange={e => setReviewContent(e.target.value)} placeholder="متن کامل نظر…" rows={4} style={{ ...inputStyle, resize: 'vertical' }} />
           <Button isLoading={submittingReview} onClick={handleSubmitReview}>ثبت نظر</Button>
+        </div>
+      </Modal>
+
+      {/* Report Modal */}
+      <Modal isOpen={reportModal} onClose={() => setReportModal(false)} title="گزارش کتاب">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>در صورت مشاهده محتوای نامناسب، کپی‌رایت یا سایر تخلفات، می‌توانید این کتاب را گزارش دهید.</p>
+          <input value={reportReason} onChange={e => setReportReason(e.target.value)} placeholder="علت تخلف (الزامی)" style={inputStyle} />
+          <textarea value={reportDesc} onChange={e => setReportDesc(e.target.value)} placeholder="توضیحات بیشتر (اختیاری)…" rows={3} style={{ ...inputStyle, resize: 'vertical' }} />
+          <Button isLoading={isReporting} onClick={handleReportBook} style={{ background: 'var(--accent-rose)', color: '#fff', border: 'none' }}>ثبت تخلف</Button>
         </div>
       </Modal>
     </div>

@@ -123,6 +123,28 @@ namespace Ketabino.Controllers
         }
 
         [Authorize]
+        [HttpGet("library")]
+        public async Task<IActionResult> GetMyLibrary()
+        {
+            long userId = long.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "0");
+
+            var sql = @"
+                SELECT DISTINCT b.ID, b.AUTHOR_ID, u.NAME AS AUTHOR_NAME, b.TITLE, b.DESCRIPTION, b.COVER_IMAGE, b.STATUS, b.CREATED_AT, b.UPDATED_AT,
+                       (SELECT COUNT(*) FROM CHAPTERS c WHERE c.BOOK_ID = b.ID AND c.STATUS = 'Published') AS CHAPTERS_COUNT,
+                       (SELECT COUNT(*) FROM LIKES l WHERE l.BOOK_ID = b.ID) AS LIKES_COUNT,
+                       COALESCE((SELECT AVG(r.RATING) FROM REVIEWS r WHERE r.BOOK_ID = b.ID), 0.0) AS AVG_RATING
+                FROM BOOKS b
+                JOIN USERS u ON b.AUTHOR_ID = u.ID
+                LEFT JOIN LIKES l ON b.ID = l.BOOK_ID AND l.USER_ID = :userId
+                LEFT JOIN READING_PROGRESS rp ON b.ID = rp.BOOK_ID AND rp.USER_ID = :userId
+                WHERE b.STATUS = 'Published' AND (l.USER_ID IS NOT NULL OR rp.USER_ID IS NOT NULL)
+                ORDER BY b.CREATED_AT DESC";
+
+            var books = await _db.QueryAsync(sql, new[] { new SqliteParameter("userId", userId) }, MapBookResponse);
+            return Ok(books);
+        }
+
+        [Authorize]
         [HttpPost("{id}/like")]
         public async Task<IActionResult> LikeBook(long id)
         {

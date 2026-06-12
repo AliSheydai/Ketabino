@@ -3,25 +3,35 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
-import { Wallet, TrendingUp, Clock, CreditCard, BookmarkIcon, Star } from 'lucide-react';
+import { Wallet, TrendingUp, Clock, CreditCard, BookmarkIcon, Star, BookOpen, ChevronLeft } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useWallet } from '@/hooks/useWallet';
 import { useSubscription } from '@/hooks/useSubscription';
+import { useMyLibrary } from '@/hooks/useBooks';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Modal } from '@/components/ui/Modal';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { formatCoins, formatPrice, formatDate, formatRelativeTime } from '@/utils/format';
+import { Link } from 'next-view-transitions';
 
-type Tab = 'wallet' | 'transactions' | 'subscriptions';
+type Tab = 'library' | 'wallet' | 'transactions' | 'subscriptions';
 
 export default function ProfilePage() {
   const router = useRouter();
   const { user, isAuthenticated } = useAuth();
   const { wallet, transactions, packages, isLoading, buyCoins } = useWallet();
   const { plans, active, purchasePlan } = useSubscription();
+  const { books: libraryBooks, isLoading: isLoadingLibrary } = useMyLibrary();
 
-  const [tab, setTab] = useState<Tab>('wallet');
+  const [tab, setTab] = useState<Tab>(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const t = params.get('tab');
+      if (t === 'library' || t === 'wallet' || t === 'transactions' || t === 'subscriptions') return t as Tab;
+    }
+    return 'library';
+  });
   const [buyModal, setBuyModal] = useState(false);
   const [selectedPkg, setSelectedPkg] = useState<number | null>(null);
   const [isBuying, setIsBuying] = useState(false);
@@ -76,7 +86,7 @@ export default function ProfilePage() {
 
       {/* Tabs */}
       <div style={{ display: 'flex', gap: 4, background: 'var(--bg-card)', border: '1px solid var(--border-default)', borderRadius: 'var(--radius-lg)', padding: 4, marginBottom: 28 }}>
-        {([['wallet', <Wallet size={15} />, 'کیف پول'], ['transactions', <Clock size={15} />, 'تراکنش‌ها'], ['subscriptions', <Star size={15} />, 'اشتراک']] as const).map(([key, icon, label]) => (
+        {([['library', <BookOpen size={15} />, 'کتابخانه'], ['wallet', <Wallet size={15} />, 'کیف پول'], ['transactions', <Clock size={15} />, 'تراکنش‌ها'], ['subscriptions', <Star size={15} />, 'اشتراک']] as const).map(([key, icon, label]) => (
           <button key={key} onClick={() => setTab(key as Tab)}
             style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '9px 14px', borderRadius: 'var(--radius-md)', border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: '0.9rem', transition: 'all 0.2s',
               background: tab === key ? 'var(--bg-elevated)' : 'transparent',
@@ -86,6 +96,57 @@ export default function ProfilePage() {
           </button>
         ))}
       </div>
+
+      {/* Tab: Library */}
+      {tab === 'library' && (
+        <div>
+          {isLoadingLibrary ? (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 16 }}>
+              {Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-64 w-full rounded-xl" />)}
+            </div>
+          ) : libraryBooks.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '60px 20px', background: 'var(--bg-card)', borderRadius: 'var(--radius-xl)', border: '1px dashed var(--border-default)' }}>
+              <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'var(--bg-elevated)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', color: 'var(--text-muted)' }}>
+                <BookOpen size={28} />
+              </div>
+              <p style={{ fontWeight: 600, fontSize: '1.1rem', marginBottom: 8 }}>کتابخانه‌ی شما خالی است!</p>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: 24 }}>شما هنوز هیچ کتابی را به کتابخانه‌ی خود اضافه نکرده‌اید.</p>
+              <Button onClick={() => router.push('/home')}>کاوش کتاب‌ها</Button>
+            </div>
+          ) : (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 16 }}>
+              {libraryBooks.map(book => (
+                <Link key={book.id} href={`/book/${book.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                  <motion.div whileHover={{ y: -5 }} style={{ background: 'var(--bg-card)', border: '1px solid var(--border-default)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', height: '100%', display: 'flex', flexDirection: 'column' }}>
+                    <div style={{ position: 'relative', paddingTop: '140%', background: 'var(--bg-elevated)' }}>
+                      {book.coverImage ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={book.coverImage} alt={book.title} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+                      ) : (
+                        <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>بدون تصویر</div>
+                      )}
+                      {book.status !== 'Published' && (
+                        <div style={{ position: 'absolute', top: 8, right: 8 }}>
+                          <Badge variant="violet">در حال انتشار</Badge>
+                        </div>
+                      )}
+                    </div>
+                    <div style={{ padding: '14px 12px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                      <h3 style={{ fontWeight: 700, fontSize: '0.95rem', marginBottom: 4, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{book.title}</h3>
+                      <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', marginBottom: 12 }}>{book.authorName}</p>
+                      
+                      <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', gap: 6, color: 'var(--accent-gold)', fontSize: '0.85rem', fontWeight: 600 }}>
+                        <span>مشاهده</span>
+                        <ChevronLeft size={14} />
+                      </div>
+                    </div>
+                  </motion.div>
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Tab: Wallet */}
       {tab === 'wallet' && (

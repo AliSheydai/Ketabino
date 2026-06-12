@@ -31,6 +31,20 @@ export function useBooks(genreId?: number, search?: string) {
   return { books, isLoading, error, refetch: fetchBooks };
 }
 
+export function useMyLibrary() {
+  const [books, setBooks] = useState<Book[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    api.get<Book[]>('/book/library')
+      .then(setBooks)
+      .catch(() => setBooks([]))
+      .finally(() => setIsLoading(false));
+  }, []);
+
+  return { books, isLoading };
+}
+
 export function useGenres() {
   const [genres, setGenres] = useState<Genre[]>([]);
   const [isLoading, setIsLoading] = useState(true);

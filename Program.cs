@@ -24,7 +24,18 @@ builder.Services.AddCors(options =>
 
 // 2. Add controllers and OpenAPI support
 builder.Services.AddControllers();
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApiDocument(options =>
+{
+    options.Title = "Ketabino API";
+    options.AddSecurity("Bearer", System.Linq.Enumerable.Empty<string>(), new NSwag.OpenApiSecurityScheme
+    {
+        Type = NSwag.OpenApiSecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        Description = "Enter the JWT token (without the 'Bearer ' prefix)."
+    });
+    options.OperationProcessors.Add(new NSwag.Generation.Processors.Security.AspNetCoreOperationSecurityScopeProcessor("Bearer"));
+});
 
 // 3. Register database services and helpers
 builder.Services.AddSingleton<DatabaseConnectionProvider>();
@@ -67,7 +78,8 @@ using (var scope = app.Services.CreateScope())
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseOpenApi();
+    app.UseSwaggerUi();
 }
 
 app.UseCors("AllowNextJs");

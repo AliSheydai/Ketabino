@@ -25,7 +25,7 @@ cd ketabino
 # Restore dependencies
 dotnet restore
 
-# Run the backend (starts on http://localhost:5000)
+# Run the backend (starts on http://localhost:5131)
 dotnet run
 ```
 
@@ -33,7 +33,7 @@ The backend will:
 
 - Create the SQLite database automatically on first run
 - Initialize the database schema
-- Start listening on `http://localhost:5000`
+- Start listening on `http://localhost:5131`
 
 ### Terminal 2: Run the Frontend
 
@@ -53,9 +53,19 @@ npm run dev
 
 ### 3. Access the Application
 
-- **Frontend**: http://localhost:3000
-- **Backend API**: http://localhost:5000
-- **Swagger API Docs**: http://localhost:5000/swagger (development only)
+- **Frontend**: http://localhost:3000 (or 3001 if port 3000 is in use)
+- **Backend API**: http://localhost:5131
+- **Swagger API Docs**: http://localhost:5131/swagger (development only)
+
+### How to use Swagger UI (Admin & Testing)
+We have configured **NSwag** so you can easily test the APIs right from your browser.
+1. Open your browser and go to [http://localhost:5131/swagger](http://localhost:5131/swagger).
+2. To test endpoints that require authentication (like the Admin endpoints or Submitting a Report), you need a token.
+3. Use the `POST /api/Auth/login` endpoint to log in (or `POST /api/Auth/register` to create an Admin account). The response will contain a `token`.
+4. Copy the `token` string.
+5. Click the green **Authorize** button at the top of the Swagger page.
+6. Paste your token (no need for the 'Bearer ' prefix, just the token itself) and click **Authorize**.
+7. You can now use any protected endpoint directly from the Swagger panel!
 
 ---
 
@@ -106,7 +116,7 @@ The backend uses default values, but you can customize:
 Create `frontend/.env.local` if needed:
 
 ```env
-NEXT_PUBLIC_API_URL=http://localhost:5000
+NEXT_PUBLIC_API_URL=http://localhost:5131
 ```
 
 ---
@@ -187,7 +197,7 @@ If you prefer Docker, see [DOCKER.md](./DOCKER.md) for instructions.
 
 ### CORS Errors
 
-Make sure the backend is running on port 5000 and the frontend on port 3000.
+Make sure the backend is running on port 5131 and the frontend on port 3000.
 
 ### Database Issues
 
