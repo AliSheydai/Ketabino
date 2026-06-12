@@ -1,9 +1,7 @@
-// File Path: lib/api.ts
-// Central API client — all fetch calls go through here
-
+const publicUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 const API_BASE = typeof window === 'undefined' 
-  ? (process.env.INTERNAL_API_URL || 'http://localhost:5000/api') 
-  : (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api');
+  ? (process.env.INTERNAL_API_URL || publicUrl) 
+  : publicUrl;
 
 function getToken(): string | null {
   if (typeof window === 'undefined') return null;
