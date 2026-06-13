@@ -40,7 +40,8 @@ namespace Ketabino.Database
                 }
                 else
                 {
-                    _logger.LogInformation("Database tables already exist. Skipping schema initialization.");
+                    _logger.LogInformation("Database tables already exist. Checking for missing tables...");
+                    await CreateNewTablesIfMissingAsync(connection);
                 }
             }
             catch (SqliteException ex)
@@ -257,6 +258,116 @@ namespace Ketabino.Database
             catch (Exception ex)
             {
                 _logger.LogWarning(ex, "Failed to seed mock entities.");
+            }
+        }
+
+        private async Task CreateNewTablesIfMissingAsync(SqliteConnection connection)
+        {
+            string[] tables = { "BOOK_CLUBS", "BOOK_CLUB_MEMBERS", "BOOK_CLUB_MESSAGES", "CHALLENGES", "USER_CHALLENGES" };
+            foreach (var table in tables)
+            {
+                var checkSql = $"SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='{table}'";
+                using var cmd = new SqliteCommand(checkSql, connection);
+                var count = Convert.ToInt32(await cmd.ExecuteScalarAsync());
+                if (count == 0)
+                {
+                    _logger.LogInformation("Creating missing table: {Table}", table);
+                    string createSql = "";
+                    if (table == "BOOK_CLUBS")
+                    {
+                        createSql = @"CREATE TABLE BOOK_CLUBS (
+                            ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                            CREATOR_ID INTEGER NOT NULL,
+                            BOOK_ID INTEGER NOT NULL,
+                            NAME TEXT NOT NULL,
+                            DESCRIPTION TEXT,
+                            CREATED_AT DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                            FOREIGN KEY (CREATOR_ID) REFERENCES USERS(ID) ON DELETE CASCADE,
+                            FOREIGN KEY (BOOK_ID) REFERENCES BOOKS(ID) ON DELETE CASCADE
+                        );";
+                    }
+                    else if (table == "BOOK_CLUB_MEMBERS")
+                    {
+                        createSql = @"CREATE TABLE BOOK_CLUB_MEMBERS (
+                            BOOK_CLUB_ID INTEGER NOT NULL,
+                            USER_ID INTEGER NOT NULL,
+                            JOINED_AT DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                            PRIMARY KEY (BOOK_CLUB_ID, USER_ID),
+                            FOREIGN KEY (BOOK_CLUB_ID) REFERENCES BOOK_CLUBS(ID) ON DELETE CASCADE,
+                            FOREIGN KEY (USER_ID) REFERENCES USERS(ID) ON DELETE CASCADE
+                        );";
+                    }
+                    else if (table == "BOOK_CLUB_MESSAGES")
+                    {
+                        createSql = @"CREATE TABLE BOOK_CLUB_MESSAGES (
+                            ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                            BOOK_CLUB_ID INTEGER NOT NULL,
+                            USER_ID INTEGER NOT NULL,
+                            CONTENT TEXT NOT NULL,
+                            CREATED_AT DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                            FOREIGN KEY (BOOK_CLUB_ID) REFERENCES BOOK_CLUBS(ID) ON DELETE CASCADE,
+                            FOREIGN KEY (USER_ID) REFERENCES USERS(ID) ON DELETE CASCADE
+                        );";
+                    }
+                    else if (table == "CHALLENGES")
+                    {
+                        createSql = @"CREATE TABLE CHALLENGES (
+                            ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                            TITLE TEXT NOT NULL,
+                            DESCRIPTION TEXT NOT NULL,
+                            TARGET_TYPE TEXT NOT NULL,
+                            TARGET_COUNT INTEGER NOT NULL,
+                            COIN_REWARD INTEGER NOT NULL,
+                            END_DATE DATETIME NOT NULL,
+                            IS_ACTIVE INTEGER DEFAULT 1 NOT NULL
+                        );";
+                    }
+                    else if (table == "USER_CHALLENGES")
+                    {
+                        createSql = @"CREATE TABLE USER_CHALLENGES (
+                            USER_ID INTEGER NOT NULL,
+                            CHALLENGE_ID INTEGER NOT NULL,
+                            CURRENT_PROGRESS INTEGER DEFAULT 0 NOT NULL,
+                            IS_COMPLETED INTEGER DEFAULT 0 NOT NULL,
+                            CLAIMED_AT DATETIME,
+                            PRIMARY KEY (USER_ID, CHALLENGE_ID),
+                            FOREIGN KEY (USER_ID) REFERENCES USERS(ID) ON DELETE CASCADE,
+                            FOREIGN KEY (CHALLENGE_ID) REFERENCES CHALLENGES(ID) ON DELETE CASCADE
+                        );";
+                    }
+
+                    using var createCmd = new SqliteCommand(createSql, connection);
+                    await createCmd.ExecuteNonQueryAsync();
+
+                    if (table == "CHALLENGES")
+                    {
+                        await SeedNewChallengesAsync(connection);
+                    }
+                }
+            }
+        }
+
+        private async Task SeedNewChallengesAsync(SqliteConnection connection)
+        {
+            var challenges = new[]
+            {
+                new { Title = "کتاب‌خوان حرفه‌ای", Desc = "۳ کتاب مختلف را شروع کرده و پیشرفت مطالعه ثبت کنید.", TargetType = "Books", TargetCount = 3, Reward = 100, Days = 30 },
+                new { Title = "مداومت در خواندن", Desc = "۱۰ فصل مختلف از کتاب‌ها را خریداری یا مطالعه کنید.", TargetType = "Chapters", TargetCount = 10, Reward = 250, Days = 14 },
+                new { Title = "سرمایه‌گذاری روی یادگیری", Desc = "۵۰۰ سکه به کیف پول خود اضافه کنید.", TargetType = "Coins", TargetCount = 500, Reward = 50, Days = 7 }
+            };
+
+            foreach (var c in challenges)
+            {
+                var sql = @"INSERT INTO CHALLENGES (TITLE, DESCRIPTION, TARGET_TYPE, TARGET_COUNT, COIN_REWARD, END_DATE, IS_ACTIVE) 
+                            VALUES (:title, :desc, :type, :count, :reward, :endDate, 1)";
+                using var cmd = new SqliteCommand(sql, connection);
+                cmd.Parameters.Add(new SqliteParameter("title", c.Title));
+                cmd.Parameters.Add(new SqliteParameter("desc", c.Desc));
+                cmd.Parameters.Add(new SqliteParameter("type", c.TargetType));
+                cmd.Parameters.Add(new SqliteParameter("count", c.TargetCount));
+                cmd.Parameters.Add(new SqliteParameter("reward", c.Reward));
+                cmd.Parameters.Add(new SqliteParameter("endDate", DateTime.UtcNow.AddDays(c.Days)));
+                await cmd.ExecuteNonQueryAsync();
             }
         }
     }

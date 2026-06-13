@@ -5,7 +5,7 @@ import { Link } from 'next-view-transitions';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
-import { Search, X, Wallet, User, LogOut, BookOpen, LayoutDashboard, Moon, Sun, Bell, Home } from 'lucide-react';
+import { Search, X, Wallet, User, LogOut, BookOpen, LayoutDashboard, Moon, Sun, Bell, Home, Users, Trophy } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useWallet } from '@/hooks/useWallet';
 import { useNotifications } from '@/hooks/useNotifications';
@@ -432,6 +432,8 @@ export function Header() {
                       {/* Common items (both mobile and desktop) */}
                       {[
                         { icon: <BookOpen size={15} />, label: 'کتابخانه من', href: '/profile?tab=library' },
+                        { icon: <Users size={15} />, label: 'حلقه‌های کتابخوانی', href: '/book-clubs' },
+                        { icon: <Trophy size={15} />, label: 'چالش‌های مطالعه', href: '/challenges' },
                         ...(user?.role === 'Author' ? [{ icon: <LayoutDashboard size={15} />, label: 'استودیوی نویسنده', href: '/author' }] : []),
                         ...(user?.role === 'Admin' ? [{ icon: <LayoutDashboard size={15} />, label: 'پنل مدیریت', href: '/admin' }] : []),
                       ].map(item => (

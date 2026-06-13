@@ -261,7 +261,21 @@ namespace Ketabino.Controllers
 
             if (exists > 0)
             {
-                return Conflict(new { Message = "شما قبلاً برای این کتاب ثبت نظر کرده‌اید." });
+                var updateSql = @"
+                    UPDATE REVIEWS 
+                    SET RATING = :rating, TITLE = :title, CONTENT = :content, CREATED_AT = CURRENT_TIMESTAMP
+                    WHERE USER_ID = :userId AND BOOK_ID = :bookId";
+
+                await _db.ExecuteNonQueryAsync(updateSql, new[]
+                {
+                    new SqliteParameter("userId", userId),
+                    new SqliteParameter("bookId", id),
+                    new SqliteParameter("rating", request.Rating),
+                    new SqliteParameter("title", SqliteDbHelper.ToDbValue(request.Title)),
+                    new SqliteParameter("content", SqliteDbHelper.ToDbValue(request.Content))
+                });
+
+                return Ok(new { Message = "نظر شما با موفقیت بروزرسانی شد." });
             }
 
             var insertSql = @"

@@ -20,7 +20,7 @@ type Tab = 'library' | 'wallet' | 'transactions' | 'subscriptions';
 export default function ProfilePage() {
   const router = useRouter();
   const { user, isAuthenticated } = useAuth();
-  const { wallet, transactions, packages, isLoading, buyCoins } = useWallet();
+  const { wallet, transactions, packages, isLoading, buyCoins, refetch: refetchWallet } = useWallet();
   const { plans, active, purchasePlan } = useSubscription();
   const { books: libraryBooks, isLoading: isLoadingLibrary } = useMyLibrary();
 
@@ -39,6 +39,7 @@ export default function ProfilePage() {
   const [subModal, setSubModal] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<number | null>(null);
   const [isPurchasingSub, setIsPurchasingSub] = useState(false);
+  const [subError, setSubError] = useState('');
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -61,8 +62,17 @@ export default function ProfilePage() {
   async function handlePurchaseSub() {
     if (!selectedPlan) return;
     setIsPurchasingSub(true);
-    try { await purchasePlan(selectedPlan); setSubModal(false); }
-    catch { } finally { setIsPurchasingSub(false); }
+    setSubError('');
+    try {
+      await purchasePlan(selectedPlan);
+      setSubModal(false);
+      await refetchWallet();
+    }
+    catch (e: any) {
+      setSubError(e.message || 'خطا در خرید اشتراک. لطفاً موجودی کیف پول خود را بررسی کنید.');
+    } finally {
+      setIsPurchasingSub(false);
+    }
   }
 
   return (
@@ -235,7 +245,7 @@ export default function ProfilePage() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 16 }}>
             {plans.map(plan => (
               <motion.div key={plan.id} whileHover={{ y: -4 }} style={{ background: 'var(--bg-card)', border: `1px solid ${selectedPlan === plan.id ? 'var(--accent-gold)' : 'var(--border-default)'}`, borderRadius: 'var(--radius-lg)', padding: '22px 20px', cursor: 'pointer' }}
-                onClick={() => { setSelectedPlan(plan.id); setSubModal(true); }}>
+                onClick={() => { setSelectedPlan(plan.id); setSubError(''); setSubModal(true); }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
                   <p style={{ fontWeight: 700, fontSize: '1rem' }}>{plan.name}</p>
                   <Badge variant="gold">{plan.durationDays} روز</Badge>
@@ -275,6 +285,7 @@ export default function ProfilePage() {
               <p style={{ fontWeight: 700, fontSize: '1.1rem', marginBottom: 8 }}>{plan.name}</p>
               <p style={{ color: 'var(--accent-gold)', fontSize: '1.4rem', fontWeight: 900, margin: '12px 0' }}>{formatCoins(plan.price)}</p>
               {plan.description && <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', lineHeight: 1.7, marginBottom: 20 }}>{plan.description}</p>}
+              {subError && <p style={{ color: 'var(--accent-rose)', marginBottom: 12, fontSize: '0.85rem' }}>{subError}</p>}
               <Button isLoading={isPurchasingSub} onClick={handlePurchaseSub} size="lg">خرید اشتراک</Button>
             </div>
           ) : null;

@@ -37,12 +37,36 @@ export default function BookDetailPage({ params }: { params: Promise<{ id: strin
   const [reportDesc, setReportDesc] = useState('');
   const [submittingReview, setSubmittingReview] = useState(false);
   const [submittingComment, setSubmittingComment] = useState(false);
+  const [reviewError, setReviewError] = useState('');
+
+  const handleOpenReviewModal = () => {
+    const myReview = reviews.find(r => r.userId === user?.id);
+    if (myReview) {
+      setRating(myReview.rating);
+      setReviewTitle(myReview.title || '');
+      setReviewContent(myReview.content || '');
+    } else {
+      setRating(5);
+      setReviewTitle('');
+      setReviewContent('');
+    }
+    setReviewError('');
+    setReviewModal(true);
+  };
 
   async function handleSubmitReview() {
     if (!isAuthenticated) { router.push('/login'); return; }
     setSubmittingReview(true);
-    try { await submitReview(rating, reviewTitle, reviewContent); setReviewModal(false); }
-    catch { } finally { setSubmittingReview(false); }
+    setReviewError('');
+    try {
+      await submitReview(rating, reviewTitle, reviewContent);
+      setReviewModal(false);
+    }
+    catch (e: any) {
+      setReviewError(e.message || 'خطا در ثبت نظر');
+    } finally {
+      setSubmittingReview(false);
+    }
   }
 
   async function handleSubmitComment() {
@@ -138,8 +162,8 @@ export default function BookDetailPage({ params }: { params: Promise<{ id: strin
                 {liked ? 'پسندیدم' : 'پسندیدن'}
               </Button>
             )}
-            <Button variant="outline" size="sm" onClick={() => setReviewModal(true)}>
-              <Star size={14} />ثبت نظر
+            <Button variant="outline" size="sm" onClick={handleOpenReviewModal}>
+              <Star size={14} />{reviews.some(r => r.userId === user?.id) ? 'ویرایش نظر' : 'ثبت نظر'}
             </Button>
             <Button variant="outline" size="sm" onClick={() => setReportModal(true)} style={{ color: 'var(--accent-rose)', borderColor: 'rgba(244, 63, 94, 0.3)' }}>
               <Flag size={14} />گزارش
@@ -291,7 +315,10 @@ export default function BookDetailPage({ params }: { params: Promise<{ id: strin
           </div>
           <input value={reviewTitle} onChange={e => setReviewTitle(e.target.value)} placeholder="عنوان نظر" style={inputStyle} />
           <textarea value={reviewContent} onChange={e => setReviewContent(e.target.value)} placeholder="متن کامل نظر…" rows={4} style={{ ...inputStyle, resize: 'vertical' }} />
-          <Button isLoading={submittingReview} onClick={handleSubmitReview}>ثبت نظر</Button>
+          {reviewError && <p style={{ color: 'var(--accent-rose)', fontSize: '0.85rem' }}>{reviewError}</p>}
+          <Button isLoading={submittingReview} onClick={handleSubmitReview}>
+            {reviews.some(r => r.userId === user?.id) ? 'ویرایش نظر' : 'ثبت نظر'}
+          </Button>
         </div>
       </Modal>
 
