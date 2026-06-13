@@ -171,8 +171,7 @@ export default function AdminDashboardPage() {
         </div>
       </div>
 
-      {/* Tabs */}
-      <div style={{ display: 'flex', gap: 8, borderBottom: '1px solid var(--border-default)', paddingBottom: 1, marginBottom: 28 }}>
+      <div className="admin-tabs-container">
         {[
           { id: 'dashboard', label: 'داشبورد', icon: <Shield size={16} /> },
           { id: 'users', label: 'کاربران', icon: <Users size={16} /> },
@@ -182,19 +181,11 @@ export default function AdminDashboardPage() {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id as any)}
+            className="admin-tab-btn"
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 8,
-              padding: '12px 20px',
-              border: 'none',
-              background: 'none',
               color: activeTab === tab.id ? 'var(--accent-gold)' : 'var(--text-muted)',
               borderBottom: activeTab === tab.id ? '2px solid var(--accent-gold)' : '2px solid transparent',
-              cursor: 'pointer',
               fontWeight: activeTab === tab.id ? 700 : 500,
-              fontSize: '0.95rem',
-              transition: 'all 0.2s',
             }}
           >
             {tab.icon}
@@ -221,7 +212,7 @@ export default function AdminDashboardPage() {
               transition={{ duration: 0.15 }}
             >
               {activeTab === 'dashboard' && stats && (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 16 }}>
+                <div className="admin-stats-grid">
                   {[
                     { label: 'کل کاربران', value: stats.totalUsers, icon: <Users size={20} />, color: '#8B5CF6' },
                     { label: 'نویسندگان', value: stats.totalAuthors, icon: <Award size={20} />, color: '#10B981' },
@@ -229,12 +220,11 @@ export default function AdminDashboardPage() {
                     { label: 'گزارش‌های تخلف', value: stats.totalReports, icon: <AlertTriangle size={20} />, color: '#F43F5E' },
                     { label: 'کل تراکنش‌های واریزی', value: `${formatCoins(stats.totalCoinsDeposited)}`, icon: <Coins size={20} />, color: '#10B981', wide: true }
                   ].map((card, i) => (
-                    <div key={i} style={{
+                    <div key={i} className={card.wide ? "admin-stat-card-wide" : ""} style={{
                       background: 'var(--bg-card)',
                       border: '1px solid var(--border-default)',
                       borderRadius: 'var(--radius-lg)',
                       padding: '24px 20px',
-                      gridColumn: card.wide ? 'span 2' : 'auto'
                     }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
                         <span style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>{card.label}</span>
@@ -324,7 +314,7 @@ export default function AdminDashboardPage() {
                         <p style={{ fontWeight: 700, fontSize: '0.95rem' }}>علت: {r.reason}</p>
                         {r.description && <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem' }}>توضیحات: {r.description}</p>}
                         
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid var(--border-subtle)', paddingTop: 12, marginTop: 4 }}>
+                        <div className="admin-report-footer">
                           <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>گزارش‌دهنده: {r.userName}</span>
                           
                           {r.status === 'Pending' && (
@@ -357,15 +347,7 @@ export default function AdminDashboardPage() {
               {activeTab === 'books' && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                   {books.map(b => (
-                    <div key={b.id} style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 16,
-                      padding: 16,
-                      background: 'var(--bg-card)',
-                      border: '1px solid var(--border-default)',
-                      borderRadius: 'var(--radius-lg)'
-                    }}>
+                    <div key={b.id} className="admin-book-row">
                       <div style={{ width: 44, height: 60, borderRadius: 'var(--radius-sm)', background: 'var(--bg-elevated)', overflow: 'hidden', flexShrink: 0 }}>
                         {b.coverImage ? (
                           <img src={b.coverImage} alt={b.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
