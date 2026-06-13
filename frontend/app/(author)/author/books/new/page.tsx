@@ -90,7 +90,7 @@ export default function NewBookPage() {
   const ch = chapters[activeChapter];
 
   return (
-    <div style={{ maxWidth: 1100, margin: '0 auto', padding: 'var(--fixed-header-content-offset) 20px 32px' }}>
+    <div style={{ maxWidth: 1100, margin: '0 auto', padding: '12px 20px 32px' }}>
       {/* Breadcrumb */}
       <button onClick={() => router.push('/author')} style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: 'none', color: 'var(--accent-gold)', cursor: 'pointer', fontFamily: 'inherit', fontSize: '0.9rem', marginBottom: 24 }}>
         <ChevronLeft size={16} />بازگشت به استودیو
@@ -100,7 +100,7 @@ export default function NewBookPage() {
         <span className="text-gradient-gold">ایجاد کتاب جدید</span>
       </h1>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.6fr', gap: 28 }}>
+      <div className="new-book-grid">
 
         {/* Book Info */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -182,7 +182,7 @@ export default function NewBookPage() {
                 <input value={ch.title} onChange={e => updateChapter(activeChapter, 'title', e.target.value)} placeholder="عنوان فصل…" style={inputStyle} />
               </div>
 
-              <div style={{ display: 'flex', gap: 12 }}>
+              <div className="chapter-meta-row">
                 <div style={{ flex: 1 }}>
                   <label style={labelStyle}>قیمت (سکه)</label>
                   <input type="number" value={ch.price} onChange={e => updateChapter(activeChapter, 'price', Number(e.target.value))} min={0} style={{ ...inputStyle, direction: 'ltr' }} disabled={ch.isFree} />

@@ -27,7 +27,7 @@ export default function AuthorStudioPage() {
 
   if (authLoading || isLoading) {
     return (
-      <div style={{ maxWidth: 1100, margin: '0 auto', padding: 'var(--fixed-header-content-offset) 20px 32px' }}>
+      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '12px 20px 32px' }}>
         <Skeleton className="h-10 w-48 mb-8" />
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 14, marginBottom: 36 }}>
           {Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-24 w-full" />)}
@@ -49,7 +49,7 @@ export default function AuthorStudioPage() {
   ] : [];
 
   return (
-    <div style={{ maxWidth: 1100, margin: '0 auto', padding: 'var(--fixed-header-content-offset) 20px 32px' }}>
+    <div style={{ maxWidth: 1100, margin: '0 auto', padding: '12px 20px 32px' }}>
 
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 36 }}>

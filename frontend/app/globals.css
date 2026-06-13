@@ -300,3 +300,37 @@
     );
   }
 }
+
+/* Responsive Grid for New Book Page */
+.new-book-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  gap: 28px;
+}
+
+.chapter-meta-row {
+  display: flex;
+  gap: 12px;
+}
+
+@media (max-width: 900px) {
+  .new-book-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 600px) {
+  .chapter-meta-row {
+    flex-direction: column;
+    gap: 14px;
+  }
+  .chapter-meta-row > div {
+    width: 100% !important;
+  }
+  .chapter-meta-row button {
+    width: 100% !important;
+    justify-content: center;
+    text-align: center;
+  }
+}
