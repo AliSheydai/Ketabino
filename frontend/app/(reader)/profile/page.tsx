@@ -1,6 +1,6 @@
 'use client';
 // File: app/(reader)/profile/page.tsx
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { Wallet, TrendingUp, Clock, CreditCard, BookmarkIcon, Star, BookOpen, ChevronLeft } from 'lucide-react';
@@ -40,8 +40,13 @@ export default function ProfilePage() {
   const [selectedPlan, setSelectedPlan] = useState<number | null>(null);
   const [isPurchasingSub, setIsPurchasingSub] = useState(false);
 
+  useEffect(() => {
+    if (!isAuthenticated) {
+      router.push('/login');
+    }
+  }, [isAuthenticated, router]);
+
   if (!isAuthenticated) {
-    router.push('/login');
     return null;
   }
 
@@ -116,7 +121,7 @@ export default function ProfilePage() {
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 16 }}>
               {libraryBooks.map(book => (
-                <Link key={book.id} href={`/book/${book.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                <Link key={book.id} href={`/books/${book.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                   <motion.div whileHover={{ y: -5 }} style={{ background: 'var(--bg-card)', border: '1px solid var(--border-default)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', height: '100%', display: 'flex', flexDirection: 'column' }}>
                     <div style={{ position: 'relative', paddingTop: '140%', background: 'var(--bg-elevated)' }}>
                       {book.coverImage ? (

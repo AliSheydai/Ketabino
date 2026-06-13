@@ -46,6 +46,7 @@ export interface Book {
   chaptersCount: number;
   likesCount: number;
   averageRating: number;
+  isLiked?: boolean;
 }
 
 // ─── Chapter ──────────────────────────────────────────────────────────────────

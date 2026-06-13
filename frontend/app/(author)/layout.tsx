@@ -5,7 +5,7 @@ export default function AuthorLayout({ children }: { children: React.ReactNode }
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg-base)' }}>
       <Header />
-      <main>{children}</main>
+      <main style={{ paddingTop: '115px', paddingBottom: '40px' }}>{children}</main>
     </div>
   );
 }

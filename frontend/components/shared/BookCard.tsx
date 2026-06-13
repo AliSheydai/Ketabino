@@ -72,8 +72,8 @@ export function BookCard({ book }: BookCardProps) {
 
           {/* Stats */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginTop: 6, paddingTop: 10, borderTop: '1px solid var(--border-subtle)' }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: 4, color: 'var(--text-muted)', fontSize: '0.78rem' }}>
-              <Heart size={12} />{book.likesCount}
+            <span style={{ display: 'flex', alignItems: 'center', gap: 4, color: book.isLiked ? 'var(--accent-rose)' : 'var(--text-muted)', fontSize: '0.78rem' }}>
+              <Heart size={12} fill={book.isLiked ? 'var(--accent-rose)' : 'none'} stroke={book.isLiked ? 'none' : 'currentColor'} />{book.likesCount}
             </span>
             <span style={{ display: 'flex', alignItems: 'center', gap: 4, color: 'var(--text-muted)', fontSize: '0.78rem' }}>
               <BookOpen size={12} />{book.chaptersCount} فصل

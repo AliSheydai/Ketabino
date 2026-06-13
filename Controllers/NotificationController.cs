@@ -32,7 +32,7 @@ namespace Ketabino.Controllers
                 Title = reader["TITLE"].ToString()!,
                 Message = reader["MESSAGE"].ToString()!,
                 IsRead = Convert.ToInt32(reader["IS_READ"]) == 1,
-                CreatedAt = Convert.ToDateTime(reader["CREATED_AT"])
+                CreatedAt = SqliteDbHelper.GetUtcDateTime(reader["CREATED_AT"])
             });
 
             return Ok(notifications);

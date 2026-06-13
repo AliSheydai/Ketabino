@@ -61,7 +61,7 @@ namespace Ketabino.Controllers
                 Price = Convert.ToDecimal(reader["PRICE"]),
                 IsFree = Convert.ToInt32(reader["IS_FREE"]) == 1,
                 Status = reader["STATUS"].ToString()!,
-                CreatedAt = Convert.ToDateTime(reader["CREATED_AT"]),
+                CreatedAt = SqliteDbHelper.GetUtcDateTime(reader["CREATED_AT"]),
                 IsPurchased = Convert.ToInt32(reader["IS_PURCHASED"]) == 1,
                 Content = null // Do not return content in list
             });
@@ -96,7 +96,7 @@ namespace Ketabino.Controllers
             var bookId = Convert.ToInt64(reader["BOOK_ID"]);
             var seq = Convert.ToInt32(reader["SEQUENCE_NUMBER"]);
             var price = Convert.ToDecimal(reader["PRICE"]);
-            var created = Convert.ToDateTime(reader["CREATED_AT"]);
+            var created = SqliteDbHelper.GetUtcDateTime(reader["CREATED_AT"]);
             
             // Read CLOB content in Oracle
             var contentOracle = reader["CONTENT"];

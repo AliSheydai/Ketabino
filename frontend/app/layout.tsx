@@ -2,6 +2,7 @@
 import type { Metadata, Viewport } from 'next';
 import ViewTransitionsProvider from '@/components/ViewTransitionsProvider';
 import { AuthProvider } from '@/context/AuthContext';
+import { WalletProvider } from '@/context/WalletContext';
 import { NextThemeProvider } from '@/components/shared/NextThemeProvider';
 import './globals.css';
 
@@ -38,7 +39,9 @@ export default function RootLayout({
         <ViewTransitionsProvider>
           <NextThemeProvider>
             <AuthProvider>
-              {children}
+              <WalletProvider>
+                {children}
+              </WalletProvider>
             </AuthProvider>
           </NextThemeProvider>
         </ViewTransitionsProvider>

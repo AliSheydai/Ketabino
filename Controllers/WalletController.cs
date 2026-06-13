@@ -33,7 +33,7 @@ namespace Ketabino.Controllers
             {
                 UserId = Convert.ToInt64(reader["USER_ID"]),
                 Balance = Convert.ToDecimal(reader["BALANCE"]),
-                UpdatedAt = Convert.ToDateTime(reader["UPDATED_AT"])
+                UpdatedAt = SqliteDbHelper.GetUtcDateTime(reader["UPDATED_AT"])
             });
 
             if (wallet == null)
@@ -62,7 +62,7 @@ namespace Ketabino.Controllers
                 Amount = Convert.ToDecimal(reader["AMOUNT"]),
                 Type = reader["TYPE"].ToString()!,
                 Description = reader["DESCRIPTION"] == DBNull.Value ? null : reader["DESCRIPTION"].ToString(),
-                CreatedAt = Convert.ToDateTime(reader["CREATED_AT"])
+                CreatedAt = SqliteDbHelper.GetUtcDateTime(reader["CREATED_AT"])
             });
 
             return Ok(transactions);

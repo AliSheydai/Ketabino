@@ -24,7 +24,7 @@ export default function BookDetailPage({ params }: { params: Promise<{ id: strin
   const { chapters, isLoading: chaptersLoading } = useBookChapters(bookId);
   const { reviews, submitReview } = useBookReviews(bookId);
   const { comments, submitComment } = useBookComments(bookId);
-  const { liked, toggleLike } = useLike(bookId);
+  const { liked, toggleLike } = useLike(bookId, book?.isLiked ?? false);
   const { submitReport, isReporting } = useReport();
 
   const [reviewModal, setReviewModal] = useState(false);
@@ -153,7 +153,20 @@ export default function BookDetailPage({ params }: { params: Promise<{ id: strin
         <h2 style={{ fontWeight: 700, fontSize: '1.15rem', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
           <BookOpen size={18} style={{ color: 'var(--accent-gold)' }} />فهرست فصل‌ها
         </h2>
-        {chaptersLoading ? <ChapterSkeleton /> : (
+        {chaptersLoading ? <ChapterSkeleton /> : chapters.length === 0 ? (
+          <div style={{
+            textAlign: 'center',
+            padding: '40px 20px',
+            background: 'var(--bg-card)',
+            border: '1px dashed var(--border-default)',
+            borderRadius: 'var(--radius-lg)',
+            color: 'var(--text-muted)',
+            fontSize: '0.9rem'
+          }}>
+            <BookOpen size={24} style={{ marginBottom: 8, opacity: 0.5, display: 'inline-block' }} />
+            <p>فعلا محتوای موجود نیست</p>
+          </div>
+        ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {chapters.map((ch, i) => (
               <motion.div key={ch.id}

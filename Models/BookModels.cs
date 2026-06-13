@@ -27,6 +27,7 @@ namespace Ketabino.Models
         public int ChaptersCount { get; set; }
         public int LikesCount { get; set; }
         public double AverageRating { get; set; }
+        public bool IsLiked { get; set; }
     }
 
     public class GenreResponse

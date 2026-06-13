@@ -205,5 +205,16 @@ namespace Ketabino.Database
             }
             return (T)Convert.ChangeType(value, typeof(T));
         }
+
+        // Helper to read DateTime as UTC
+        public static DateTime GetUtcDateTime(object value)
+        {
+            if (value == null || value == DBNull.Value)
+            {
+                return DateTime.MinValue;
+            }
+            var dt = Convert.ToDateTime(value);
+            return DateTime.SpecifyKind(dt, DateTimeKind.Utc);
+        }
     }
 }

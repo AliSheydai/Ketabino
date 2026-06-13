@@ -46,7 +46,7 @@ namespace Ketabino.Controllers
                 LastReadChapterId = reader["LAST_READ_CHAPTER_ID"] == DBNull.Value ? null : Convert.ToInt64(reader["LAST_READ_CHAPTER_ID"]),
                 LastReadChapterTitle = reader["CHAPTER_TITLE"] == DBNull.Value ? null : reader["CHAPTER_TITLE"].ToString(),
                 LastReadPosition = Convert.ToInt32(reader["LAST_READ_POSITION"]),
-                LastReadAt = Convert.ToDateTime(reader["LAST_READ_AT"])
+                LastReadAt = SqliteDbHelper.GetUtcDateTime(reader["LAST_READ_AT"])
             });
 
             if (progress == null)
@@ -108,7 +108,7 @@ namespace Ketabino.Controllers
                 BookTitle = reader["BOOK_TITLE"].ToString()!,
                 Position = Convert.ToInt32(reader["POSITION"]),
                 Note = reader["NOTE"] == DBNull.Value ? null : reader["NOTE"].ToString(),
-                CreatedAt = Convert.ToDateTime(reader["CREATED_AT"])
+                CreatedAt = SqliteDbHelper.GetUtcDateTime(reader["CREATED_AT"])
             });
 
             return Ok(bookmarks);
@@ -185,7 +185,7 @@ namespace Ketabino.Controllers
                 Color = reader["COLOR"].ToString()!,
                 TextContent = reader["TEXT_CONTENT"].ToString()!,
                 Note = reader["NOTE"] == DBNull.Value ? null : reader["NOTE"].ToString(),
-                CreatedAt = Convert.ToDateTime(reader["CREATED_AT"])
+                CreatedAt = SqliteDbHelper.GetUtcDateTime(reader["CREATED_AT"])
             });
 
             return Ok(highlights);

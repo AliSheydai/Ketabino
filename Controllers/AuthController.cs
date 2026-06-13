@@ -189,7 +189,7 @@ namespace Ketabino.Controllers
             PhoneNumber = reader["PHONE_NUMBER"].ToString()!,
             Name = reader["NAME"].ToString()!,
             Role = reader["ROLE"].ToString()!,
-            CreatedAt = Convert.ToDateTime(reader["CREATED_AT"])
+            CreatedAt = SqliteDbHelper.GetUtcDateTime(reader["CREATED_AT"])
         };
 
         private AuthorProfileResponse MapAuthorProfile(SqliteDataReader reader) => new()
@@ -198,7 +198,7 @@ namespace Ketabino.Controllers
             Bio = reader["BIO"] == DBNull.Value ? null : reader["BIO"].ToString(),
             ProfileImage = reader["PROFILE_IMAGE"] == DBNull.Value ? null : reader["PROFILE_IMAGE"].ToString(),
             SocialLinks = reader["SOCIAL_LINKS"] == DBNull.Value ? null : reader["SOCIAL_LINKS"].ToString(),
-            UpdatedAt = Convert.ToDateTime(reader["UPDATED_AT"])
+            UpdatedAt = SqliteDbHelper.GetUtcDateTime(reader["UPDATED_AT"])
         };
     }
 }

@@ -99,7 +99,7 @@ namespace Ketabino.Controllers
                 Reason = reader["REASON"].ToString()!,
                 Description = reader["DESCRIPTION"] == DBNull.Value ? null : reader["DESCRIPTION"].ToString(),
                 Status = reader["STATUS"].ToString()!,
-                CreatedAt = Convert.ToDateTime(reader["CREATED_AT"])
+                CreatedAt = SqliteDbHelper.GetUtcDateTime(reader["CREATED_AT"])
             });
 
             return Ok(reports);
@@ -142,7 +142,7 @@ namespace Ketabino.Controllers
                 PhoneNumber = reader["PHONE_NUMBER"].ToString()!,
                 Name = reader["NAME"].ToString()!,
                 Role = reader["ROLE"].ToString()!,
-                CreatedAt = Convert.ToDateTime(reader["CREATED_AT"]),
+                CreatedAt = SqliteDbHelper.GetUtcDateTime(reader["CREATED_AT"]),
                 Balance = reader["BALANCE"] == DBNull.Value ? 0 : Convert.ToDecimal(reader["BALANCE"])
             });
 

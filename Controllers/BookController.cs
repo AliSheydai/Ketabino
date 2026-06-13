@@ -24,16 +24,25 @@ namespace Ketabino.Controllers
         [HttpGet]
         public async Task<IActionResult> GetBooks([FromQuery] int? genreId, [FromQuery] string? search)
         {
+            long userId = 0;
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (long.TryParse(userIdClaim, out var parsedId))
+            {
+                userId = parsedId;
+            }
+
             var sql = @"
                 SELECT b.ID, b.AUTHOR_ID, u.NAME AS AUTHOR_NAME, b.TITLE, b.DESCRIPTION, b.COVER_IMAGE, b.STATUS, b.CREATED_AT, b.UPDATED_AT,
                        (SELECT COUNT(*) FROM CHAPTERS c WHERE c.BOOK_ID = b.ID AND c.STATUS = 'Published') AS CHAPTERS_COUNT,
                        (SELECT COUNT(*) FROM LIKES l WHERE l.BOOK_ID = b.ID) AS LIKES_COUNT,
-                       COALESCE((SELECT AVG(r.RATING) FROM REVIEWS r WHERE r.BOOK_ID = b.ID), 0.0) AS AVG_RATING
+                       COALESCE((SELECT AVG(r.RATING) FROM REVIEWS r WHERE r.BOOK_ID = b.ID), 0.0) AS AVG_RATING,
+                       EXISTS(SELECT 1 FROM LIKES l WHERE l.BOOK_ID = b.ID AND l.USER_ID = :userId) AS IS_LIKED
                 FROM BOOKS b
                 JOIN USERS u ON b.AUTHOR_ID = u.ID
                 WHERE b.STATUS = 'Published'";
 
             var parameters = new List<SqliteParameter>();
+            parameters.Add(new SqliteParameter("userId", userId));
 
             if (genreId.HasValue)
             {
@@ -90,16 +99,27 @@ namespace Ketabino.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetBook(long id)
         {
+            long userId = 0;
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (long.TryParse(userIdClaim, out var parsedId))
+            {
+                userId = parsedId;
+            }
+
             var sql = @"
                 SELECT b.ID, b.AUTHOR_ID, u.NAME AS AUTHOR_NAME, b.TITLE, b.DESCRIPTION, b.COVER_IMAGE, b.STATUS, b.CREATED_AT, b.UPDATED_AT,
                        (SELECT COUNT(*) FROM CHAPTERS c WHERE c.BOOK_ID = b.ID AND c.STATUS = 'Published') AS CHAPTERS_COUNT,
                        (SELECT COUNT(*) FROM LIKES l WHERE l.BOOK_ID = b.ID) AS LIKES_COUNT,
-                       COALESCE((SELECT AVG(r.RATING) FROM REVIEWS r WHERE r.BOOK_ID = b.ID), 0.0) AS AVG_RATING
+                       COALESCE((SELECT AVG(r.RATING) FROM REVIEWS r WHERE r.BOOK_ID = b.ID), 0.0) AS AVG_RATING,
+                       EXISTS(SELECT 1 FROM LIKES l WHERE l.BOOK_ID = b.ID AND l.USER_ID = :userId) AS IS_LIKED
                 FROM BOOKS b
                 JOIN USERS u ON b.AUTHOR_ID = u.ID
                 WHERE b.ID = :id AND b.STATUS = 'Published'";
 
-            var book = await _db.QuerySingleOrDefaultAsync(sql, new[] { new SqliteParameter("id", id) }, MapBookResponse);
+            var book = await _db.QuerySingleOrDefaultAsync(sql, new[] { 
+                new SqliteParameter("id", id),
+                new SqliteParameter("userId", userId)
+            }, MapBookResponse);
 
             if (book == null)
             {
@@ -132,7 +152,8 @@ namespace Ketabino.Controllers
                 SELECT DISTINCT b.ID, b.AUTHOR_ID, u.NAME AS AUTHOR_NAME, b.TITLE, b.DESCRIPTION, b.COVER_IMAGE, b.STATUS, b.CREATED_AT, b.UPDATED_AT,
                        (SELECT COUNT(*) FROM CHAPTERS c WHERE c.BOOK_ID = b.ID AND c.STATUS = 'Published') AS CHAPTERS_COUNT,
                        (SELECT COUNT(*) FROM LIKES l WHERE l.BOOK_ID = b.ID) AS LIKES_COUNT,
-                       COALESCE((SELECT AVG(r.RATING) FROM REVIEWS r WHERE r.BOOK_ID = b.ID), 0.0) AS AVG_RATING
+                       COALESCE((SELECT AVG(r.RATING) FROM REVIEWS r WHERE r.BOOK_ID = b.ID), 0.0) AS AVG_RATING,
+                       EXISTS(SELECT 1 FROM LIKES l WHERE l.BOOK_ID = b.ID AND l.USER_ID = :userId) AS IS_LIKED
                 FROM BOOKS b
                 JOIN USERS u ON b.AUTHOR_ID = u.ID
                 LEFT JOIN LIKES l ON b.ID = l.BOOK_ID AND l.USER_ID = :userId
@@ -213,7 +234,7 @@ namespace Ketabino.Controllers
                 Rating = Convert.ToInt32(reader["RATING"]),
                 Title = reader["TITLE"] == DBNull.Value ? null : reader["TITLE"].ToString(),
                 Content = reader["CONTENT"] == DBNull.Value ? null : reader["CONTENT"].ToString(),
-                CreatedAt = Convert.ToDateTime(reader["CREATED_AT"])
+                CreatedAt = SqliteDbHelper.GetUtcDateTime(reader["CREATED_AT"])
             });
 
             return Ok(reviews);
@@ -323,11 +344,12 @@ namespace Ketabino.Controllers
             Description = reader["DESCRIPTION"] == DBNull.Value ? null : reader["DESCRIPTION"].ToString(),
             CoverImage = reader["COVER_IMAGE"] == DBNull.Value ? null : reader["COVER_IMAGE"].ToString(),
             Status = reader["STATUS"].ToString()!,
-            CreatedAt = Convert.ToDateTime(reader["CREATED_AT"]),
-            UpdatedAt = Convert.ToDateTime(reader["UPDATED_AT"]),
+            CreatedAt = SqliteDbHelper.GetUtcDateTime(reader["CREATED_AT"]),
+            UpdatedAt = SqliteDbHelper.GetUtcDateTime(reader["UPDATED_AT"]),
             ChaptersCount = Convert.ToInt32(reader["CHAPTERS_COUNT"]),
             LikesCount = Convert.ToInt32(reader["LIKES_COUNT"]),
-            AverageRating = Convert.ToDouble(reader["AVG_RATING"])
+            AverageRating = Convert.ToDouble(reader["AVG_RATING"]),
+            IsLiked = Convert.ToBoolean(reader["IS_LIKED"])
         };
 
         private CommentResponse MapComment(SqliteDataReader reader) => new()
@@ -339,7 +361,7 @@ namespace Ketabino.Controllers
             ChapterId = reader["CHAPTER_ID"] == DBNull.Value ? null : Convert.ToInt64(reader["CHAPTER_ID"]),
             ParentCommentId = reader["PARENT_COMMENT_ID"] == DBNull.Value ? null : Convert.ToInt64(reader["PARENT_COMMENT_ID"]),
             Content = reader["CONTENT"].ToString()!,
-            CreatedAt = Convert.ToDateTime(reader["CREATED_AT"])
+            CreatedAt = SqliteDbHelper.GetUtcDateTime(reader["CREATED_AT"])
         };
     }
 }

@@ -181,7 +181,7 @@ namespace Ketabino.Controllers
                 Price = Convert.ToDecimal(reader["PRICE"]),
                 IsFree = Convert.ToInt32(reader["IS_FREE"]) == 1,
                 Status = reader["STATUS"].ToString()!,
-                CreatedAt = Convert.ToDateTime(reader["CREATED_AT"]),
+                CreatedAt = SqliteDbHelper.GetUtcDateTime(reader["CREATED_AT"]),
                 IsPurchased = true // Author always has access to their own chapters
             });
 
@@ -360,7 +360,7 @@ namespace Ketabino.Controllers
                 FilePath = reader["FILE_PATH"].ToString()!,
                 FileType = reader["FILE_TYPE"].ToString()!,
                 FileSize = Convert.ToInt64(reader["FILE_SIZE"]),
-                CreatedAt = Convert.ToDateTime(reader["CREATED_AT"])
+                CreatedAt = SqliteDbHelper.GetUtcDateTime(reader["CREATED_AT"])
             });
 
             return Ok(assets);
@@ -375,11 +375,12 @@ namespace Ketabino.Controllers
             Description = reader["DESCRIPTION"] == DBNull.Value ? null : reader["DESCRIPTION"].ToString(),
             CoverImage = reader["COVER_IMAGE"] == DBNull.Value ? null : reader["COVER_IMAGE"].ToString(),
             Status = reader["STATUS"].ToString()!,
-            CreatedAt = Convert.ToDateTime(reader["CREATED_AT"]),
-            UpdatedAt = Convert.ToDateTime(reader["UPDATED_AT"]),
+            CreatedAt = SqliteDbHelper.GetUtcDateTime(reader["CREATED_AT"]),
+            UpdatedAt = SqliteDbHelper.GetUtcDateTime(reader["UPDATED_AT"]),
             ChaptersCount = Convert.ToInt32(reader["CHAPTERS_COUNT"]),
             LikesCount = Convert.ToInt32(reader["LIKES_COUNT"]),
-            AverageRating = Convert.ToDouble(reader["AVG_RATING"])
+            AverageRating = Convert.ToDouble(reader["AVG_RATING"]),
+            IsLiked = false
         };
     }
 }

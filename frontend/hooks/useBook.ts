@@ -78,8 +78,12 @@ export function useBookComments(bookId: number) {
   return { comments, isLoading, submitComment };
 }
 
-export function useLike(bookId: number) {
-  const [liked, setLiked] = useState(false);
+export function useLike(bookId: number, initialLiked: boolean = false) {
+  const [liked, setLiked] = useState(initialLiked);
+
+  useEffect(() => {
+    setLiked(initialLiked);
+  }, [initialLiked]);
 
   const toggleLike = useCallback(async () => {
     try {

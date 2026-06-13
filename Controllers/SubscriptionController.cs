@@ -57,8 +57,8 @@ namespace Ketabino.Controllers
                 UserId = Convert.ToInt64(reader["USER_ID"]),
                 PlanId = Convert.ToInt32(reader["PLAN_ID"]),
                 PlanName = reader["PLAN_NAME"].ToString()!,
-                StartDate = Convert.ToDateTime(reader["START_DATE"]),
-                EndDate = Convert.ToDateTime(reader["END_DATE"]),
+                StartDate = SqliteDbHelper.GetUtcDateTime(reader["START_DATE"]),
+                EndDate = SqliteDbHelper.GetUtcDateTime(reader["END_DATE"]),
                 Status = reader["STATUS"].ToString()!
             });
 

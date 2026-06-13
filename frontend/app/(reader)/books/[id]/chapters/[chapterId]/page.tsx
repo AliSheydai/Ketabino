@@ -171,7 +171,11 @@ export default function ChapterPage({ params }: { params: Promise<{ id: string; 
         >
           {chapter.content}
         </div>
-      ) : null}
+      ) : (
+        <div style={{ textAlign: 'center', padding: '80px 20px', color: 'var(--text-muted)' }}>
+          <p>فعلا محتوای موجود نیست</p>
+        </div>
+      )}
 
       {/* Highlight popover */}
       <AnimatePresence>
