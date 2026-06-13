@@ -66,7 +66,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div style={{ maxWidth: 900, margin: '0 auto', padding: '32px 20px' }}>
+    <div style={{ maxWidth: 900, margin: '0 auto', padding: 'var(--fixed-header-content-offset) 20px 32px' }}>
 
       {/* Profile Header */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}

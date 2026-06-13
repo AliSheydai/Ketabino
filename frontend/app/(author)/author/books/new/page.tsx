@@ -90,7 +90,7 @@ export default function NewBookPage() {
   const ch = chapters[activeChapter];
 
   return (
-    <div style={{ maxWidth: 1100, margin: '0 auto', padding: '32px 20px' }}>
+    <div style={{ maxWidth: 1100, margin: '0 auto', padding: 'var(--fixed-header-content-offset) 20px 32px' }}>
       {/* Breadcrumb */}
       <button onClick={() => router.push('/author')} style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: 'none', color: 'var(--accent-gold)', cursor: 'pointer', fontFamily: 'inherit', fontSize: '0.9rem', marginBottom: 24 }}>
         <ChevronLeft size={16} />بازگشت به استودیو
