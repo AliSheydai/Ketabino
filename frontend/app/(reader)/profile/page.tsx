@@ -76,7 +76,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div style={{ maxWidth: 900, margin: '0 auto', padding: '12px 20px 32px' }}>
+    <div style={{ maxWidth: 900, margin: '0 auto', padding: 'var(--fixed-header-content-offset) 20px 40px'}}>
 
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
         className="flex flex-col sm:flex-row items-center gap-5 mb-9 p-6 sm:p-7 bg-[var(--bg-card)] border border-[var(--border-default)] rounded-[var(--radius-xl)] text-center sm:text-right">
