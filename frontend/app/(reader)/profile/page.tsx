@@ -66,15 +66,14 @@ export default function ProfilePage() {
   }
 
   return (
-    <div style={{ maxWidth: 900, margin: '0 auto', padding: 'var(--fixed-header-content-offset) 20px 32px' }}>
+    <div style={{ maxWidth: 900, margin: '0 auto', padding: '12px 20px 32px' }}>
 
-      {/* Profile Header */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-        style={{ display: 'flex', alignItems: 'center', gap: 20, marginBottom: 36, padding: '24px 28px', background: 'var(--bg-card)', border: '1px solid var(--border-default)', borderRadius: 'var(--radius-xl)' }}>
+        className="flex flex-col sm:flex-row items-center gap-5 mb-9 p-6 sm:p-7 bg-[var(--bg-card)] border border-[var(--border-default)] rounded-[var(--radius-xl)] text-center sm:text-right">
         <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'linear-gradient(135deg, #C9A84C, #8B5CF6)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 26, flexShrink: 0 }}>
           👤
         </div>
-        <div>
+        <div className="flex flex-col items-center sm:items-start">
           <h1 style={{ fontWeight: 700, fontSize: '1.3rem', marginBottom: 4 }}>{user?.name}</h1>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem' }}>{user?.phoneNumber}</p>
           <Badge variant={user?.role === 'Author' ? 'violet' : 'default'} className="mt-1">
@@ -82,18 +81,42 @@ export default function ProfilePage() {
           </Badge>
         </div>
         {wallet && (
-          <div style={{ marginRight: 'auto', textAlign: 'left' }}>
+          <div className="w-full sm:w-auto mt-4 sm:mt-0 pt-4 sm:pt-0 border-t border-dashed border-[var(--border-default)] sm:border-0 sm:mr-auto text-center sm:text-left">
             <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginBottom: 4 }}>موجودی کیف پول</p>
             <p className="text-gradient-gold" style={{ fontSize: '1.6rem', fontWeight: 900 }}>{formatCoins(wallet.balance)}</p>
           </div>
         )}
       </motion.div>
 
-      {/* Tabs */}
-      <div style={{ display: 'flex', gap: 4, background: 'var(--bg-card)', border: '1px solid var(--border-default)', borderRadius: 'var(--radius-lg)', padding: 4, marginBottom: 28 }}>
+      <div style={{
+        display: 'flex',
+        gap: 4,
+        background: 'var(--bg-card)',
+        border: '1px solid var(--border-default)',
+        borderRadius: 'var(--radius-lg)',
+        padding: 4,
+        marginBottom: 28,
+        overflowX: 'auto',
+        scrollbarWidth: 'none',
+        msOverflowStyle: 'none',
+      }} className="no-scrollbar">
         {([['library', <BookOpen size={15} />, 'کتابخانه'], ['wallet', <Wallet size={15} />, 'کیف پول'], ['transactions', <Clock size={15} />, 'تراکنش‌ها'], ['subscriptions', <Star size={15} />, 'اشتراک']] as const).map(([key, icon, label]) => (
           <button key={key} onClick={() => setTab(key as Tab)}
-            style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '9px 14px', borderRadius: 'var(--radius-md)', border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: '0.9rem', transition: 'all 0.2s',
+            style={{
+              flex: 1,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 6,
+              padding: '9px 14px',
+              borderRadius: 'var(--radius-md)',
+              border: 'none',
+              cursor: 'pointer',
+              fontFamily: 'inherit',
+              fontSize: '0.9rem',
+              transition: 'all 0.2s',
+              flexShrink: 0,
+              whiteSpace: 'nowrap',
               background: tab === key ? 'var(--bg-elevated)' : 'transparent',
               color: tab === key ? 'var(--accent-gold)' : 'var(--text-secondary)',
               fontWeight: tab === key ? 600 : 400,

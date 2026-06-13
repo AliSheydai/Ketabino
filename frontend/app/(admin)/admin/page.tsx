@@ -171,8 +171,16 @@ export default function AdminDashboardPage() {
         </div>
       </div>
 
-      {/* Tabs */}
-      <div style={{ display: 'flex', gap: 8, borderBottom: '1px solid var(--border-default)', paddingBottom: 1, marginBottom: 28 }}>
+      <div style={{
+        display: 'flex',
+        gap: 8,
+        borderBottom: '1px solid var(--border-default)',
+        paddingBottom: 1,
+        marginBottom: 28,
+        overflowX: 'auto',
+        scrollbarWidth: 'none',
+        msOverflowStyle: 'none',
+      }} className="no-scrollbar">
         {[
           { id: 'dashboard', label: 'داشبورد', icon: <Shield size={16} /> },
           { id: 'users', label: 'کاربران', icon: <Users size={16} /> },
@@ -189,12 +197,14 @@ export default function AdminDashboardPage() {
               padding: '12px 20px',
               border: 'none',
               background: 'none',
-              color: activeTab === tab.id ? 'var(--accent-gold)' : 'var(--text-muted)',
-              borderBottom: activeTab === tab.id ? '2px solid var(--accent-gold)' : '2px solid transparent',
               cursor: 'pointer',
-              fontWeight: activeTab === tab.id ? 700 : 500,
               fontSize: '0.95rem',
               transition: 'all 0.2s',
+              flexShrink: 0,
+              whiteSpace: 'nowrap',
+              color: activeTab === tab.id ? 'var(--accent-gold)' : 'var(--text-muted)',
+              borderBottom: activeTab === tab.id ? '2px solid var(--accent-gold)' : '2px solid transparent',
+              fontWeight: activeTab === tab.id ? 700 : 500,
             }}
           >
             {tab.icon}
@@ -221,7 +231,7 @@ export default function AdminDashboardPage() {
               transition={{ duration: 0.15 }}
             >
               {activeTab === 'dashboard' && stats && (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 16 }}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                   {[
                     { label: 'کل کاربران', value: stats.totalUsers, icon: <Users size={20} />, color: '#8B5CF6' },
                     { label: 'نویسندگان', value: stats.totalAuthors, icon: <Award size={20} />, color: '#10B981' },
@@ -229,12 +239,11 @@ export default function AdminDashboardPage() {
                     { label: 'گزارش‌های تخلف', value: stats.totalReports, icon: <AlertTriangle size={20} />, color: '#F43F5E' },
                     { label: 'کل تراکنش‌های واریزی', value: `${formatCoins(stats.totalCoinsDeposited)}`, icon: <Coins size={20} />, color: '#10B981', wide: true }
                   ].map((card, i) => (
-                    <div key={i} style={{
+                    <div key={i} className={card.wide ? "col-span-1 sm:col-span-2" : "col-span-1"} style={{
                       background: 'var(--bg-card)',
                       border: '1px solid var(--border-default)',
                       borderRadius: 'var(--radius-lg)',
                       padding: '24px 20px',
-                      gridColumn: card.wide ? 'span 2' : 'auto'
                     }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
                         <span style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>{card.label}</span>
@@ -250,30 +259,30 @@ export default function AdminDashboardPage() {
                 <div style={{ overflowX: 'auto', background: 'var(--bg-card)', border: '1px solid var(--border-default)', borderRadius: 'var(--radius-lg)' }}>
                   <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'right', fontSize: '0.9rem' }}>
                     <thead>
-                      <tr style={{ borderBottom: '1px solid var(--border-default)', background: 'var(--bg-elevated)' }}>
-                        <th style={{ padding: '16px 20px', color: 'var(--text-muted)' }}>شناسه</th>
-                        <th style={{ padding: '16px 20px', color: 'var(--text-muted)' }}>نام کاربر</th>
-                        <th style={{ padding: '16px 20px', color: 'var(--text-muted)' }}>شماره تماس</th>
-                        <th style={{ padding: '16px 20px', color: 'var(--text-muted)' }}>نقش</th>
-                        <th style={{ padding: '16px 20px', color: 'var(--text-muted)' }}>کیف پول</th>
-                        <th style={{ padding: '16px 20px', color: 'var(--text-muted)' }}>عملیات</th>
+                      <tr style={{ borderBottom: '1px solid var(--border-default)', background: 'var(--bg-elevated)', whiteSpace: 'nowrap' }}>
+                        <th style={{ padding: '16px 20px', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>شناسه</th>
+                        <th style={{ padding: '16px 20px', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>نام کاربر</th>
+                        <th style={{ padding: '16px 20px', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>شماره تماس</th>
+                        <th style={{ padding: '16px 20px', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>نقش</th>
+                        <th style={{ padding: '16px 20px', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>کیف پول</th>
+                        <th style={{ padding: '16px 20px', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>عملیات</th>
                       </tr>
                     </thead>
                     <tbody>
                       {users.map(u => (
-                        <tr key={u.id} style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-                          <td style={{ padding: '16px 20px', color: 'var(--text-muted)' }}>{u.id}</td>
-                          <td style={{ padding: '16px 20px', fontWeight: 700 }}>{u.name}</td>
-                          <td style={{ padding: '16px 20px', direction: 'ltr' }}>{u.phoneNumber}</td>
-                          <td style={{ padding: '16px 20px' }}>
+                        <tr key={u.id} style={{ borderBottom: '1px solid var(--border-subtle)', whiteSpace: 'nowrap' }}>
+                          <td style={{ padding: '16px 20px', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>{u.id}</td>
+                          <td style={{ padding: '16px 20px', fontWeight: 700, whiteSpace: 'nowrap' }}>{u.name}</td>
+                          <td style={{ padding: '16px 20px', direction: 'ltr', whiteSpace: 'nowrap' }}>{u.phoneNumber}</td>
+                          <td style={{ padding: '16px 20px', whiteSpace: 'nowrap' }}>
                             <Badge variant={u.role === 'Admin' ? 'rose' : u.role === 'Author' ? 'emerald' : 'default'}>
                               {u.role === 'Admin' ? 'مدیر' : u.role === 'Author' ? 'نویسنده' : 'خواننده'}
                             </Badge>
                           </td>
-                          <td style={{ padding: '16px 20px', color: 'var(--accent-gold)', fontWeight: 600 }}>
+                          <td style={{ padding: '16px 20px', color: 'var(--accent-gold)', fontWeight: 600, whiteSpace: 'nowrap' }}>
                             {formatCoins(u.balance)}
                           </td>
-                          <td style={{ padding: '16px 20px' }}>
+                          <td style={{ padding: '16px 20px', whiteSpace: 'nowrap' }}>
                             {u.role !== 'Admin' && (
                               <Button 
                                 size="sm" 
@@ -306,17 +315,17 @@ export default function AdminDashboardPage() {
                         background: 'var(--bg-card)',
                         border: '1px solid var(--border-default)',
                         borderRadius: 'var(--radius-lg)',
-                        padding: 20,
+                        padding: '16px 20px',
                         display: 'flex',
                         flexDirection: 'column',
                         gap: 12
                       }}>
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-0">
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }} className="justify-between sm:justify-start w-full sm:w-auto">
                             <Badge variant="rose">گزارش {r.targetType === 'Book' ? 'کتاب' : r.targetType === 'Chapter' ? 'فصل' : 'دیدگاه'}</Badge>
                             <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>شناسه هدف: {r.targetId}</span>
                           </div>
-                          <Badge variant={r.status === 'Pending' ? 'default' : r.status === 'Resolved' ? 'emerald' : 'rose'}>
+                          <Badge variant={r.status === 'Pending' ? 'default' : r.status === 'Resolved' ? 'emerald' : 'rose'} className="self-start sm:self-auto mt-2 sm:mt-0">
                             {r.status === 'Pending' ? 'در انتظار بررسی' : r.status === 'Resolved' ? 'حل شده' : 'رد شده'}
                           </Badge>
                         </div>
@@ -324,11 +333,11 @@ export default function AdminDashboardPage() {
                         <p style={{ fontWeight: 700, fontSize: '0.95rem' }}>علت: {r.reason}</p>
                         {r.description && <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem' }}>توضیحات: {r.description}</p>}
                         
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid var(--border-subtle)', paddingTop: 12, marginTop: 4 }}>
-                          <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>گزارش‌دهنده: {r.userName}</span>
+                        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-0 border-t border-[var(--border-subtle)] pt-3 mt-1">
+                          <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }} className="w-full sm:w-auto text-center sm:text-right">گزارش‌دهنده: {r.userName}</span>
                           
                           {r.status === 'Pending' && (
-                            <div style={{ display: 'flex', gap: 8 }}>
+                            <div className="flex gap-2 justify-center sm:justify-start w-full sm:w-auto">
                               <Button 
                                 size="sm" 
                                 variant="ghost" 
@@ -357,16 +366,8 @@ export default function AdminDashboardPage() {
               {activeTab === 'books' && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                   {books.map(b => (
-                    <div key={b.id} style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 16,
-                      padding: 16,
-                      background: 'var(--bg-card)',
-                      border: '1px solid var(--border-default)',
-                      borderRadius: 'var(--radius-lg)'
-                    }}>
-                      <div style={{ width: 44, height: 60, borderRadius: 'var(--radius-sm)', background: 'var(--bg-elevated)', overflow: 'hidden', flexShrink: 0 }}>
+                    <div key={b.id} className="flex flex-col sm:flex-row items-center gap-4 p-4 bg-[var(--bg-card)] border border-[var(--border-default)] rounded-[var(--radius-lg)] text-center sm:text-right">
+                      <div style={{ width: 44, height: 60, borderRadius: 'var(--radius-sm)', background: 'var(--bg-elevated)', overflow: 'hidden', flexShrink: 0 }} className="mx-auto sm:mx-0">
                         {b.coverImage ? (
                           <img src={b.coverImage} alt={b.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                         ) : (
@@ -381,6 +382,7 @@ export default function AdminDashboardPage() {
                         size="sm" 
                         variant="ghost" 
                         style={{ color: 'var(--accent-rose)' }}
+                        className="w-full sm:w-auto justify-center mt-2 sm:mt-0"
                         onClick={() => handleDeleteBook(b.id)}
                         disabled={actionLoading === b.id}
                       >

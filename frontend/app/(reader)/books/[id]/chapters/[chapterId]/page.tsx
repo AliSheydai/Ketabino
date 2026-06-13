@@ -113,16 +113,7 @@ export default function ChapterPage({ params }: { params: Promise<{ id: string; 
         {chapter && <><span>/</span><span>{chapter.title}</span></>}
       </div>
 
-      {/* Reading toolbar */}
-      <div style={{
-        position: 'sticky', top: 'var(--fixed-header-sticky-offset)', zIndex: 40,
-        display: 'flex', alignItems: 'center', gap: 12,
-        background: 'var(--glass-bg)', backdropFilter: 'blur(16px)',
-        border: '1px solid var(--border-default)',
-        borderRadius: 'var(--radius-lg)',
-        padding: '10px 18px', marginBottom: 28,
-        boxShadow: 'var(--shadow-card)',
-      }}>
+      <div className="reading-toolbar">
         <span style={{ color: 'var(--text-muted)', fontSize: '0.82rem' }}>اندازه متن</span>
         <button onClick={() => setFontSize(f => Math.max(14, f - 1))} style={iconBtn}><Minus size={14} /></button>
         <span style={{ fontSize: '0.85rem', minWidth: 28, textAlign: 'center' }}>{fontSize}</span>
@@ -206,8 +197,7 @@ export default function ChapterPage({ params }: { params: Promise<{ id: string; 
         )}
       </AnimatePresence>
 
-      {/* Chapter Navigation */}
-      <div style={{ display: 'flex', gap: 12, marginTop: 48, paddingTop: 28, borderTop: '1px solid var(--border-subtle)' }}>
+      <div className="chapter-nav-row">
         {prevChapter && (
           <Link href={`/books/${bookId}/chapters/${prevChapter.id}`} style={{ flex: 1, textDecoration: 'none' }}>
             <Button variant="outline" size="md" style={{ width: '100%', justifyContent: 'flex-start', gap: 8 }}>

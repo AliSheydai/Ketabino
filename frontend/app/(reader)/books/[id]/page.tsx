@@ -89,7 +89,7 @@ export default function BookDetailPage({ params }: { params: Promise<{ id: strin
 
       {/* Banner + Meta */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-        style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: 28, marginBottom: 40, alignItems: 'start' }}>
+        className="book-details-grid" style={{ marginBottom: 40 }}>
         
         {/* Cover */}
         <div style={{ width: 160, height: 220, borderRadius: 'var(--radius-lg)', overflow: 'hidden', background: 'var(--bg-elevated)', flexShrink: 0, boxShadow: 'var(--shadow-card)' }}>
@@ -107,11 +107,11 @@ export default function BookDetailPage({ params }: { params: Promise<{ id: strin
             نوشته <strong style={{ color: 'var(--accent-gold)' }}>{book.authorName}</strong>
           </p>
 
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 14 }}>
+          <div className="badge-container" style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 14 }}>
             {book.genres.map(g => <Badge key={g.id}>{g.name}</Badge>)}
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: 20, marginBottom: 18, color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+          <div className="stats-container" style={{ display: 'flex', alignItems: 'center', gap: 20, marginBottom: 18, color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
             <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
               <Star size={15} fill="var(--accent-gold)" stroke="none" />
               <span style={{ color: 'var(--accent-gold)', fontWeight: 700 }}>{avgRating}</span>
@@ -131,7 +131,7 @@ export default function BookDetailPage({ params }: { params: Promise<{ id: strin
             </p>
           )}
 
-          <div style={{ display: 'flex', gap: 10 }}>
+          <div className="button-container" style={{ display: 'flex', gap: 10 }}>
             {isAuthenticated && (
               <Button variant={liked ? 'gold' : 'outline'} size="sm" onClick={toggleLike}>
                 <Heart size={14} fill={liked ? 'currentColor' : 'none'} />
